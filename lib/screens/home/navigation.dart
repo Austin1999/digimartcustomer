@@ -1,11 +1,14 @@
 import 'package:digimartcustomer/constants/appconstants.dart';
+import 'package:digimartcustomer/constants/controllers.dart';
 import 'package:digimartcustomer/screens/cart/cartpage.dart';
 import 'package:digimartcustomer/screens/home/homescreen.dart';
 import 'package:digimartcustomer/screens/home/widgets/tabbar.dart';
 import 'package:digimartcustomer/screens/orders/orderpage.dart';
 import 'package:digimartcustomer/screens/profile/profile.dart';
+import 'package:digimartcustomer/screens/search/searchpage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class NavigationPage extends StatefulWidget {
   @override
@@ -42,17 +45,28 @@ class _NavigationPageState extends State<NavigationPage> {
           notchedShape: CircularNotchedRectangle(),
           onTabSelected: _onItemTapped,
           items: [
-            CustomBottomAppBarItem(iconData: Icons.home, text: 'Home'),
-            CustomBottomAppBarItem(iconData: Icons.shopping_cart, text: 'Cart'),
-            CustomBottomAppBarItem(iconData: Icons.list, text: 'Orders'),
             CustomBottomAppBarItem(
-                iconData: Icons.account_circle, text: 'Profile'),
+                iconData: Icons.home, text: 'Home', badge: false),
+            CustomBottomAppBarItem(
+                iconData: Icons.shopping_cart,
+                text: 'Cart',
+                badge: true,
+                value: userController.userModel.value.cart?.length),
+            CustomBottomAppBarItem(
+                iconData: Icons.list,
+                text: 'Orders',
+                badge: true,
+                value: orderController.orders?.length),
+            CustomBottomAppBarItem(
+                iconData: Icons.account_circle, text: 'Profile', badge: false),
           ],
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: FloatingActionButton(
           backgroundColor: kprimarycolor,
-          onPressed: () {},
+          onPressed: () {
+            Get.to(() => ListSearch());
+          },
           child: Icon(Icons.search),
           elevation: 2.0,
         ),

@@ -12,6 +12,7 @@ class ProductModel {
   static const FEATURED = "featured";
   static const PRODUCTID = "product_id";
   static const RATINGS = "rating";
+  static const PINCODE = "pincode";
 
   // List<Product> productList = [];
   String variationtype;
@@ -19,6 +20,7 @@ class ProductModel {
   String category;
   List photo;
   var price;
+  List pincode;
   int quantity;
   List variation;
   bool onsale;
@@ -31,6 +33,7 @@ class ProductModel {
       {this.name,
       this.category,
       this.description,
+      this.pincode,
       this.featured,
       this.onsale,
       this.photo,
@@ -56,5 +59,25 @@ class ProductModel {
     variationtype = data[VARIATIONTYPE];
     reviews = data[REVIEWS];
     variation = data[VARIATION];
+    pincode = data[PINCODE];
+  }
+}
+
+class CategoryModel {
+  static const PHOTOURL = "photo_url";
+  static const TITLE = "title";
+
+  // List<Product> productList = [];
+  String title;
+  String photourl;
+
+  CategoryModel({
+    this.title,
+    this.photourl,
+  });
+
+  CategoryModel.fromMap(Map<String, dynamic> data) {
+    title = data[TITLE];
+    photourl = data[PHOTOURL];
   }
 }

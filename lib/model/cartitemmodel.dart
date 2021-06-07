@@ -6,6 +6,7 @@ class CartItemModel {
   static const COST = "cost";
   static const PRICE = "price";
   static const PRODUCT_ID = "productId";
+  static const VARIATIONTYPE = "variationtype";
 
   String id;
   String image;
@@ -14,13 +15,16 @@ class CartItemModel {
   double cost;
   String productId;
   double price;
+  String variationtype;
 
   CartItemModel(
       {this.productId,
       this.id,
       this.image,
       this.name,
+      this.price,
       this.quantity,
+      this.variationtype,
       this.cost});
 
   CartItemModel.fromMap(Map<String, dynamic> data) {
@@ -31,15 +35,17 @@ class CartItemModel {
     cost = data[COST].toDouble();
     productId = data[PRODUCT_ID];
     price = data[PRICE].toDouble();
+    variationtype = data[VARIATIONTYPE];
   }
 
-  Map toJson() => {
+  Map<String, dynamic> toJson() => {
         ID: id,
         PRODUCT_ID: productId,
         IMAGE: image,
         NAME: name,
         QUANTITY: quantity,
         COST: price * quantity,
-        PRICE: price
+        PRICE: price,
+        VARIATIONTYPE: variationtype,
       };
 }

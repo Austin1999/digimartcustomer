@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 
 Logger logger = Logger();
-
+String version = '0.0.1';
 Color kprimarycolor = Color(0xFF69A03A);
 Color textwhite = Color(0xFFFFFFFF);
 Color textblack = Color(0xFF2F2E41);

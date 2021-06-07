@@ -1,9 +1,12 @@
+import 'package:digimartcustomer/constants/appconstants.dart';
 import 'package:flutter/material.dart';
 
 class CustomBottomAppBarItem {
-  CustomBottomAppBarItem({this.iconData, this.text});
   IconData iconData;
   String text;
+  bool badge = false;
+  int value;
+  CustomBottomAppBarItem({this.iconData, this.text, this.badge, this.value});
 }
 
 class CustomBottomAppBar extends StatefulWidget {
@@ -26,6 +29,7 @@ class CustomBottomAppBar extends StatefulWidget {
   final double iconSize;
   final Color backgroundColor;
   final Color color;
+
   final Color selectedColor;
   final NotchedShape notchedShape;
   final ValueChanged<int> onTabSelected;
@@ -102,7 +106,26 @@ class CustomBottomAppBarState extends State<CustomBottomAppBar> {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Icon(item.iconData, color: color, size: widget.iconSize),
+                item.badge
+                    ? Stack(children: <Widget>[
+                        Icon(item.iconData,
+                            color: color, size: widget.iconSize),
+                        new Positioned(
+                          // draw a red marble
+                          top: 0.0,
+                          right: 0.0,
+                          child: new CircleAvatar(
+                            radius: 6.5,
+                            backgroundColor: Colors.red,
+                            child: Text(
+                              item.value.toString(),
+                              style:
+                                  TextStyle(color: textwhite, fontSize: 12.0),
+                            ),
+                          ),
+                        ),
+                      ])
+                    : Icon(item.iconData, color: color, size: widget.iconSize),
                 Text(
                   item.text,
                   style: TextStyle(color: color),

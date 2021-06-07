@@ -21,26 +21,36 @@ class CartController extends GetxController {
   void addProductToCart(ProductModel product) {
     try {
       if (_isItemAlreadyAdded(product)) {
-        Get.snackbar("Check your cart", "${product.name} is already added");
+        Get.rawSnackbar(
+          title: "Check your cart",
+          message: "${product.name} is already added",
+        );
       } else {
         String itemId = Uuid().toString();
         userController.updateUserData({
           "cart": FieldValue.arrayUnion([
             {
+              'variationtype': product.variationtype,
               "id": itemId,
               "productId": product.productid,
               "name": product.name,
               "quantity": 1,
               "price": product.price,
-              "image": product.photo,
+              "image": product.photo[0],
               "cost": product.price
             }
           ])
         });
-        Get.snackbar("Item added", "${product.name} was added to your cart");
+        Get.rawSnackbar(
+          title: "Item added",
+          message: "${product.name} was added to your cart",
+        );
       }
     } catch (e) {
-      Get.snackbar("Error", "Cannot add this item");
+      Get.rawSnackbar(
+        title: "Error",
+        message: "Cannot add this item",
+      );
       debugPrint(e.toString());
     }
   }
@@ -51,7 +61,10 @@ class CartController extends GetxController {
         "cart": FieldValue.arrayRemove([cartItem.toJson()])
       });
     } catch (e) {
-      Get.snackbar("Error", "Cannot remove this item");
+      Get.rawSnackbar(
+        title: "Error",
+        message: "Cannot remove this item",
+      );
       debugPrint(e.message);
     }
   }
@@ -85,7 +98,7 @@ class CartController extends GetxController {
   void increaseQuantity(CartItemModel item) {
     removeCartItem(item);
     item.quantity++;
-    logger.i({"quantity": item.quantity});
+    // logger.i({"quantity": item.quantity});
     userController.updateUserData({
       "cart": FieldValue.arrayUnion([item.toJson()])
     });

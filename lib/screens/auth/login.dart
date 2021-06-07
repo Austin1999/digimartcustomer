@@ -1,5 +1,7 @@
 import 'package:digimartcustomer/constants/appconstants.dart';
 import 'package:digimartcustomer/constants/controllers.dart';
+import 'package:digimartcustomer/constants/firebase.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -14,22 +16,20 @@ class _LoginScreenState extends State<LoginScreen> {
     return SafeArea(
       child: Scaffold(
         body: Obx(
-          () => SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
+          () => Center(
+            child: SingleChildScrollView(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Image(
-                        image: AssetImage(
-                          'assets/images/logo.jpg',
-                        ),
-                        height: 150.0,
-                        width: 150.0,
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Image(
+                      image: AssetImage(
+                        'assets/images/logo.jpg',
                       ),
+                      height: 150.0,
+                      width: 150.0,
                     ),
                   ),
                   SizedBox(height: 30.0),
@@ -50,7 +50,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: TextFormField(
-                        controller: userController.phone,
+                        controller: userController.otp,
+                        keyboardType: TextInputType.phone,
+                        decoration: InputDecoration(
+                          hintText: 'Enter OTP',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -61,7 +68,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: RaisedButton(
                         color: kprimarycolor,
                         child: Text(
-                          userController.codesent.isFalse
+                          userController.codesent.value == false
                               ? 'Send OTP'
                               : 'Verify OTP',
                           style: TextStyle(
@@ -70,7 +77,33 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         onPressed: () async {
-                          userController.signIn();
+                          // userController.codesent.value = true;
+                          userController.codesent.value == false
+                              ? userController.signIn()
+                              : await auth
+                                  .signInWithCredential(
+                                      PhoneAuthProvider.credential(
+                                          verificationId: userController
+                                              .verificationcode.value,
+                                          smsCode: userController.otp.text))
+                                  .then((result) async {
+                                  String _userId = result.user.uid;
+                                  await firebaseFirestore
+                                      .collection("users")
+                                      .doc(_userId)
+                                      .get()
+                                      .then((doc) {
+                                    if (doc.exists) {
+                                      userController.codesent.value = false;
+                                      userController.clearControllers();
+                                    } else {
+                                      userController
+                                          .addUserToFirestore(_userId);
+                                      userController.codesent.value = false;
+                                      userController.clearControllers();
+                                    }
+                                  });
+                                });
                         },
                         shape: RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(10.0),
@@ -78,75 +111,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
-                  Center(
-                    child: Text(
-                      'OR',
-                      style: TextStyle(
-                          color: textblack,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20.0),
-                    ),
-                  ),
-                  Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(width: 1),
-                            ),
-                            child: Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Image(
-                                    image:
-                                        AssetImage('assets/images/google.png'),
-                                    height: 50,
-                                    width: 50,
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text('Log in with'),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(width: 1),
-                            ),
-                            child: Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Image(
-                                    image: AssetImage(
-                                        'assets/images/facebook.png'),
-                                    height: 50,
-                                    width: 50,
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 12.0),
-                                  child: Text('Log in with'),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
                 ],
               ),
             ),

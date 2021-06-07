@@ -1,8 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:digimartcustomer/constants/appconstants.dart';
+import 'package:digimartcustomer/constants/controllers.dart';
 import 'package:digimartcustomer/constants/firebase.dart';
 import 'package:digimartcustomer/model/usermodel.dart';
 import 'package:digimartcustomer/screens/auth/login.dart';
-import 'package:digimartcustomer/screens/home/homescreen.dart';
 import 'package:digimartcustomer/screens/home/navigation.dart';
 import 'package:digimartcustomer/utils/helper/showLoading.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -19,6 +20,7 @@ class UserController extends GetxController {
   TextEditingController otp = TextEditingController();
   String usersCollection = "users";
   Rx<UserModel> userModel = UserModel().obs;
+  RxBool updated = false.obs;
 
   @override
   void onReady() {
@@ -58,30 +60,46 @@ class UserController extends GetxController {
       await auth.verifyPhoneNumber(
         phoneNumber: '+91${phone.text}',
         verificationCompleted: (PhoneAuthCredential credential) async {
-          await auth.signInWithCredential(credential).then((result) {
+          await auth.signInWithCredential(credential).then((result) async {
             String _userId = result.user.uid;
-            _addUserToFirestore(_userId);
-            _clearControllers();
+            await firebaseFirestore
+                .collection("users")
+                .doc(_userId)
+                .get()
+                .then((doc) {
+              if (doc.exists) {
+                userController.codesent.value = false;
+                userController.clearControllers();
+              } else {
+                userController.addUserToFirestore(_userId);
+                userController.codesent.value = false;
+                userController.clearControllers();
+              }
+            });
           });
         },
         verificationFailed: (FirebaseException e) {
           debugPrint(e.message);
           dismissLoadingWidget();
-          Get.snackbar('Verification failed', '');
+          Get.snackbar('Verification failed', '',
+              backgroundColor: kprimarycolor, colorText: textwhite);
         },
         codeSent: (String verificationId, int resendToken) {
           dismissLoadingWidget();
-          codesent = true.obs;
+          codesent.value = true;
           verificationcode = verificationId.obs;
         },
         codeAutoRetrievalTimeout: (String verificationId) {
           verificationcode = verificationId.obs;
         },
-        timeout: Duration(seconds: 120),
+        // timeout: Duration(seconds:120),
       );
     } catch (e) {
       debugPrint(e.toString());
-      Get.snackbar("Sign In Failed", "Try again");
+      Get.rawSnackbar(
+        title: "Sign In Failed",
+        message: "Try again",
+      );
     }
   }
 
@@ -89,26 +107,34 @@ class UserController extends GetxController {
     auth.signOut();
   }
 
-  _addUserToFirestore(String userId) {
-    firebaseFirestore.collection(usersCollection).doc(userId).set({
-      "phone": phone.text.trim(),
-      "id": userId,
-      // "email": email.text.trim(),
-      "cart": [],
-    });
+  addUserToFirestore(String userId) {
+    firebaseFirestore.collection('users').doc(userId).set(
+      {
+        "phone": phone.text.trim(),
+        "id": userId,
+        "cart": [],
+        "name": '',
+        "address": '',
+        "pincode": ''
+      },
+      SetOptions(merge: true),
+    );
   }
 
-  _clearControllers() {
+  clearControllers() {
     phone.clear();
     otp.clear();
   }
 
   updateUserData(Map<String, dynamic> data) {
-    logger.i("UPDATED");
     firebaseFirestore
         .collection(usersCollection)
         .doc(firebaseUser.value.uid)
-        .update(data);
+        .update(data)
+        .whenComplete(() {
+      Get.off(() => NavigationPage());
+    });
+    logger.i("UPDATED");
   }
 
   Stream<UserModel> listenToUser() => firebaseFirestore

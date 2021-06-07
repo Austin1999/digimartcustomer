@@ -2,6 +2,7 @@
     package="com.disailor.digimartcustomer">
    <application
         android:label="digimartcustomer"
+        android:requestLegacyExternalStorage="true"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
