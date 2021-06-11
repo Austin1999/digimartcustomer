@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:digimartcustomer/constants/appconstants.dart';
 import 'package:digimartcustomer/constants/controllers.dart';
 import 'package:digimartcustomer/constants/firebase.dart';
@@ -27,8 +28,15 @@ class _CODState extends State<COD> {
       TextEditingController(text: userController.userModel.value.name);
   TextEditingController pincode =
       TextEditingController(text: userController.userModel.value.pincode);
-  double carttotal = userController.userModel.value.cart
-      .fold(0, (previousValue, element) => previousValue + element.cost);
+
+  double discount = userController.userModel.value.cart.fold(
+      0,
+      (previousValue, element) =>
+          previousValue + (int.parse(element.discount) * element.quantity));
+  double carttotal = userController.userModel.value.cart.fold(
+    0,
+    (previousValue, element) => previousValue + double.parse(element.cost),
+  );
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -63,7 +71,8 @@ class _CODState extends State<COD> {
                             color: Colors.black),
                         children: <TextSpan>[
                           TextSpan(
-                              text: ' ₹$carttotal',
+                              text:
+                                  '₹${double.parse((carttotal + int.parse(orderController.ordercongig.shippingfee) + (carttotal * (int.parse(orderController.ordercongig.tax)) / 100) - (carttotal - discount)).toStringAsFixed(2))}',
                               style: TextStyle(
                                   fontSize: 18.0,
                                   fontWeight: FontWeight.bold,
@@ -74,10 +83,14 @@ class _CODState extends State<COD> {
                   ),
                   InkWell(
                     onTap: () {
-                      var totalPrice = userController.userModel.value.cart.fold(
-                          0,
-                          (previousValue, element) =>
-                              previousValue + element.cost);
+                      var totalPrice = double.parse((carttotal +
+                              int.parse(
+                                  orderController.ordercongig.shippingfee) +
+                              (carttotal *
+                                  (int.parse(orderController.ordercongig.tax)) /
+                                  100) -
+                              (carttotal - discount))
+                          .toStringAsFixed(2));
 
                       showLoading();
                       try {
@@ -94,7 +107,11 @@ class _CODState extends State<COD> {
                           'phone': userController.userModel.value.phone,
                           'datetime': DateTime.now(),
                           'deliverystatus': 'Order Placed',
-                          'totalprice': totalPrice
+                          'totalprice': totalPrice,
+                          'shippingfee':
+                              orderController.ordercongig.shippingfee,
+                          'tax': orderController.ordercongig.tax,
+                          'discount': (carttotal - discount)
                         }).whenComplete(() {
                           firebaseFirestore.collection('orders').add({
                             'item':
@@ -106,16 +123,32 @@ class _CODState extends State<COD> {
                             'datetime': DateTime.now(),
                             'deliverystatus': 'Order Placed',
                             'userId': userController.firebaseUser.value.uid,
-                            'totalprice': totalPrice
+                            'totalprice': totalPrice,
+                            'shippingfee':
+                                orderController.ordercongig.shippingfee,
+                            'tax': orderController.ordercongig.tax,
+                            'discount': (carttotal - discount)
                           }).whenComplete(() {
                             widget.product.forEach((element) {
+                              print('Product ID : ${element.productId}');
                               cartController.removeCartItem(element);
+                              firebaseFirestore
+                                  .collection('products')
+                                  .doc(element.docid)
+                                  .update({
+                                'quantity':
+                                    FieldValue.increment(-element.quantity)
+                              });
                             });
+
                             dismissLoadingWidget();
                             Get.defaultDialog(
                                 barrierDismissible: false,
-                                onConfirm: () =>
-                                    Get.off(() => NavigationPage()),
+                                onConfirm: () => Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => NavigationPage()),
+                                    (route) => false),
                                 title: 'Congratulations',
                                 middleText: 'Order Successfully Placed',
                                 textConfirm: 'Okay',
@@ -135,7 +168,7 @@ class _CODState extends State<COD> {
                           : Theme.of(context).primaryColor,
                       alignment: Alignment.center,
                       child: Text(
-                        'Pay Now',
+                        'Place Order',
                         style: TextStyle(color: Colors.white, fontSize: 15.0),
                       ),
                     ),
@@ -146,105 +179,127 @@ class _CODState extends State<COD> {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              Column(
-                children: widget.product.map((e) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 8.0, vertical: 8.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(12.0),
-                          child: CachedNetworkImage(
-                            imageUrl: e.image,
-                            height: 120,
-                            width: 140,
-                            fit: BoxFit.cover,
-                            placeholder: (context, url) => Image.asset(
-                              'assets/images/loading.gif',
-                              fit: BoxFit.contain,
-                            ),
-                            errorWidget: (context, url, error) =>
-                                Icon(Icons.error),
-                          ),
-                        ),
-                        Container(
-                          padding: EdgeInsets.only(left: 14, top: 14.0),
-                          child: Column(
-                            children: [
-                              Text(
-                                e.name,
-                                style: TextStyle(
-                                    color: textblack,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18.0),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(14),
-                                child: Text(
-                                  "\₹${e.price} / ${e.variationtype}",
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Wrap(
-                          alignment: WrapAlignment.spaceBetween,
-                          crossAxisAlignment: WrapCrossAlignment.end,
-                          direction: Axis.vertical,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(14),
-                              child: Text(
-                                " Quantity : ${e.quantity}",
-                                style: TextStyle(
-                                    fontSize: 16.0,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  );
-                }).toList(),
-              ),
               SizedBox(
                 height: 30,
               ),
-              ProfileDetails(
-                  name: name, phone: phone, address: address, pincode: pincode),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                decoration: BoxDecoration(
+                  color: textwhite,
+                  borderRadius: BorderRadius.circular(6),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Theme.of(context).hintColor.withOpacity(0.15),
+                        offset: Offset(0, 3),
+                        blurRadius: 10)
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    ListTile(
+                      onTap: () {},
+                      dense: true,
+                      title: Text(
+                        'Order Summary',
+                        style: Theme.of(context).textTheme.headline6,
+                      ),
+                    ),
+                    ListView(
+                      shrinkWrap: true,
+                      primary: false,
+                      children: [
+                        Column(
+                          children: widget.product
+                              .map(
+                                (e) => ListTile(
+                                  dense: true,
+                                  title: Text(
+                                    '${e.name} x ${e.quantity}',
+                                    style:
+                                        Theme.of(context).textTheme.bodyText2,
+                                  ),
+                                  trailing: Text(
+                                    '₹${e.cost}',
+                                    style: TextStyle(color: textgrey),
+                                  ),
+                                ),
+                              )
+                              .toList(),
+                        ),
+                        ListTile(
+                          dense: true,
+                          title: Text(
+                            'Tax',
+                            style: Theme.of(context).textTheme.bodyText2,
+                          ),
+                          trailing: Text(
+                            '${orderController.ordercongig.tax}%',
+                            style: TextStyle(color: textgrey),
+                          ),
+                        ),
+                        ListTile(
+                          dense: true,
+                          title: Text(
+                            'Discount',
+                            style: Theme.of(context).textTheme.bodyText2,
+                          ),
+                          trailing: Text(
+                            '- ₹${carttotal - discount}',
+                            style: TextStyle(color: Colors.redAccent),
+                          ),
+                        ),
+                        ListTile(
+                          dense: true,
+                          title: Text(
+                            'Shipping Price',
+                            style: Theme.of(context).textTheme.bodyText2,
+                          ),
+                          trailing: Text(
+                            orderController.ordercongig.shippingfee == '0'
+                                ? 'Free'
+                                : '₹${orderController.ordercongig.shippingfee}',
+                            style: TextStyle(color: textgrey),
+                          ),
+                        ),
+                        // ListTile(
+                        //   dense: true,
+                        //   title: Text(
+                        //     'Subtotal',
+                        //     style: Theme.of(context).textTheme.bodyText2,
+                        //   ),
+                        //   trailing: Text(
+                        //     '₹${carttotal + int.parse(orderController.ordercongig.shippingfee) + (carttotal * (int.parse(orderController.ordercongig.tax)) / 100) - (carttotal - discount)}',
+                        //     style: TextStyle(color: textgrey),
+                        //   ),
+                        // ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                decoration: BoxDecoration(
+                  color: textwhite,
+                  borderRadius: BorderRadius.circular(6),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Theme.of(context).hintColor.withOpacity(0.15),
+                        offset: Offset(0, 3),
+                        blurRadius: 10)
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 16.0),
+                  child: ProfileDetails(
+                      name: name,
+                      phone: phone,
+                      address: address,
+                      pincode: pincode),
+                ),
+              ),
             ],
           ),
-          // bottomNavigationBar: SizedBox(
-          //   // height: 70,
-          //   child: BottomAppBar(
-          //     child: Row(
-          //       children: [
-          //         Spacer(),
-          //         // ignore: deprecated_member_use
-          //         Padding(
-          //           padding: const EdgeInsets.all(8.0),
-          //           child: OutlinedButton(
-          //             style: ButtonStyle(
-          //               side: MaterialStateProperty.all(
-          //                   BorderSide(color: kprimarycolor)),
-          //               foregroundColor: MaterialStateProperty.all(kprimarycolor),
-          //             ),
-          //             onPressed: () {
-
-          //             },
-          //             child: Text(
-          //               'Place Order',
-          //               style: TextStyle(fontSize: 17.5),
-          //             ),
-          //           ),
-          //         ),
-          //       ],
-          //     ),
-          //   ),
         ),
       ),
     );

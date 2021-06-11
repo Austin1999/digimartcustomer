@@ -1,4 +1,5 @@
 import 'package:digimartcustomer/constants/controllers.dart';
+import 'package:digimartcustomer/screens/home/navigation.dart';
 import 'package:digimartcustomer/screens/products/productsresult.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -41,7 +42,10 @@ class ListSearchState extends State<ListSearch> {
                     icon: Icon(
                       Icons.close,
                     ),
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () {
+                      FocusScope.of(context).unfocus();
+                      _textController.clear();
+                    },
                   ),
                   hintText: 'Search Here...',
                 ),

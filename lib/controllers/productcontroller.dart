@@ -10,7 +10,7 @@ class ProducsController extends GetxController {
   // RxList<ProductModel> categorisedproducts = RxList<ProductModel>([]);
   // String collection = "products";
   RxString string = 'All'.obs;
-  String pincode = userController.userModel.value.pincode;
+  RxString pincode = userController.userModel.value.pincode.obs;
   RxList categories = RxList([]);
   RxList carousel = RxList([]);
 
@@ -39,17 +39,20 @@ class ProducsController extends GetxController {
       .snapshots()
       .map((query) => query.get('photourl'));
 
-  Stream<List<ProductModel>> getAllProducts() => pincode == ''
-      ? firebaseFirestore.collection("products").snapshots().map((query) =>
-          query.docs.map((item) => ProductModel.fromMap(item.data())).toList())
-      : firebaseFirestore
-          .collection("products")
-          .where('pincode',
-              arrayContains: userController.userModel.value.pincode)
-          .snapshots()
-          .map((query) => query.docs
-              .map((item) => ProductModel.fromMap(item.data()))
-              .toList());
+  Stream<List<ProductModel>> getAllProducts() =>
+      // userController.userModel.value.pincode == ''
+      //     ?
+      firebaseFirestore.collection("products").snapshots().map((query) => query
+          .docs
+          .map((item) => ProductModel.fromMap(item.data(), item.id))
+          .toList());
+  // : firebaseFirestore
+  //     .collection("products")
+  //     .where('pincode', arrayContains: pincode.value)
+  //     .snapshots()
+  //     .map((query) => query.docs
+  //         .map((item) => ProductModel.fromMap(item.data(), item.id))
+  //         .toList());
 
   // Stream<List<ProductModel>> getCategoryProducts(value) => firebaseFirestore
   //     .collection("products")

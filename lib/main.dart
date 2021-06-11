@@ -38,9 +38,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: materialColor,
       ),
-      home: initScreen == 0 || initScreen == null
-          ? OnboardingScreen()
-          : SplashScreen(),
+      home: SplashScreen(),
     );
   }
 }

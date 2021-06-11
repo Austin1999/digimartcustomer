@@ -9,6 +9,7 @@ class UserModel {
   static const CART = "cart";
   static const ADDRESS = "address";
   static const PINCODE = "pincode";
+  static const LISTORDERS = "listorders";
   // static const WHISHLIST = 'whishlist';
 
   String id;
@@ -17,10 +18,11 @@ class UserModel {
   String photo;
   String address;
   String pincode;
-  // List<CartItemModel> whishlist;
+  List listorders;
   List<CartItemModel> cart;
 
-  UserModel({this.id, this.name, this.phone, this.cart, this.photo});
+  UserModel(
+      {this.id, this.name, this.phone, this.cart, this.photo, this.listorders});
 
   UserModel.fromSnapshot(DocumentSnapshot snapshot) {
     name = snapshot.data()[NAME];
@@ -29,6 +31,7 @@ class UserModel {
     photo = snapshot.data()[PHOTO];
     address = snapshot.data()[ADDRESS];
     pincode = snapshot.data()[PINCODE];
+    listorders = snapshot.data()[LISTORDERS];
     // whishlist = snapshot.data()[WHISHLIST];
     cart = _convertCartItems(snapshot.data()[CART] ?? []);
   }

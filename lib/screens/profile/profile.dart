@@ -16,6 +16,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
+    final key = GlobalKey<State<Tooltip>>();
     return SafeArea(
       child: Scaffold(
         // appBar: ,
@@ -70,11 +71,14 @@ class _ProfilePageState extends State<ProfilePage> {
                 onTap: () => Get.to(() => ListUploadPage()),
                 leading: Icon(Icons.upload_file, color: kprimarycolor),
                 title: Text('Upload List'),
-              ),
-              Divider(),
-              ListTile(
-                leading: Icon(Icons.settings_outlined, color: kprimarycolor),
-                title: Text('Settings'),
+                trailing: Tooltip(
+                    key: key,
+                    message:
+                        'Upload your photo of grocery list we will deliver at your doorstep.',
+                    child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () => _onTap(key),
+                        child: Icon(Icons.help))),
               ),
               Divider(),
               ListTile(
@@ -106,5 +110,10 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
       ),
     );
+  }
+
+  void _onTap(GlobalKey key) {
+    final dynamic tooltip = key.currentState;
+    tooltip?.ensureTooltipVisible();
   }
 }

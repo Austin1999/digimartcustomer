@@ -1,11 +1,16 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:digimartcustomer/constants/appconstants.dart';
 import 'package:digimartcustomer/constants/controllers.dart';
 import 'package:digimartcustomer/model/productmodel.dart';
+import 'package:digimartcustomer/screens/cart/cartpage.dart';
 import 'package:digimartcustomer/screens/detail/detailscreen.dart';
+import 'package:digimartcustomer/screens/search/searchpage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
 import 'package:flutter/services.dart';
+
+import '../drawer.dart';
 
 class CategoryListpage extends StatefulWidget {
   final String searchresult;
@@ -33,7 +38,37 @@ class _CategoryListpageState extends State<CategoryListpage> {
     print(datalist);
     return SafeArea(
       child: Scaffold(
+        drawer: SideDrawer(),
         appBar: AppBar(
+          actions: [
+            IconButton(
+              icon: Icon(Icons.search),
+              onPressed: () => Get.to(() => ListSearch()),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Stack(children: <Widget>[
+                IconButton(
+                    icon: Icon(Icons.shopping_cart),
+                    onPressed: () => Get.off(() => ShoppingCartWidget())),
+                new Obx(
+                  () => Positioned(
+                    // draw a red marble
+                    top: 0.0,
+                    right: 0.0,
+                    child: new CircleAvatar(
+                      radius: 6.5,
+                      backgroundColor: Colors.red,
+                      child: Text(
+                        userController.userModel.value.cart?.length.toString(),
+                        style: TextStyle(color: textwhite, fontSize: 12.0),
+                      ),
+                    ),
+                  ),
+                ),
+              ]),
+            ),
+          ],
           backgroundColor: Colors.grey[50],
           title: Text(
             widget.searchresult,
@@ -61,11 +96,15 @@ class _CategoryListpageState extends State<CategoryListpage> {
                         flex: 5,
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    image: NetworkImage(data.photo[0]),
-                                    fit: BoxFit.fill)),
+                          child: CachedNetworkImage(
+                            imageUrl: data.photo[0],
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) => Image.asset(
+                              'assets/images/loading.gif',
+                              fit: BoxFit.contain,
+                            ),
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.error),
                           ),
                         ),
                       ),
@@ -94,21 +133,45 @@ class _CategoryListpageState extends State<CategoryListpage> {
                               SizedBox(
                                 height: 6,
                               ),
-                              RatingBarIndicator(
-                                rating: data.rating,
-                                itemBuilder: (context, index) => Icon(
-                                  Icons.star,
-                                  color: Colors.amber,
-                                ),
-                                itemCount: 5,
-                                itemSize: 22.0,
-                                direction: Axis.horizontal,
-                              ),
+                              data.quantity == 0
+                                  ? Text(
+                                      'Out of Stock',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .subtitle2
+                                          .copyWith(color: Colors.red),
+                                    )
+                                  : !data.pincode.contains(userController
+                                          .userModel.value.pincode)
+                                      ? Text(
+                                          'Not Deliverable',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .subtitle2
+                                              .copyWith(color: Colors.red),
+                                        )
+                                      : Text(
+                                          'Deliverable',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .subtitle2
+                                              .copyWith(color: Colors.green),
+                                        ),
+                              // RatingBarIndicator(
+                              //   rating: double.parse(data.rating),
+                              //   itemBuilder: (context, index) => Icon(
+                              //     Icons.star,
+                              //     color: Colors.amber,
+                              //   ),
+                              //   itemCount: 5,
+                              //   itemSize: 22.0,
+                              //   direction: Axis.horizontal,
+                              // ),
                             ],
                           ),
                         ),
                       ),
-                      TextButton(onPressed: () {}, child: Text('View More'))
+                      Icon(Icons.arrow_forward_ios)
                     ]),
                   ),
                 ));

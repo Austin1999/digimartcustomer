@@ -3,12 +3,16 @@ import 'package:digimartcustomer/constants/appconstants.dart';
 import 'package:digimartcustomer/constants/controllers.dart';
 import 'package:digimartcustomer/constants/firebase.dart';
 import 'package:digimartcustomer/model/usermodel.dart';
+import 'package:digimartcustomer/onboarding/onboarding.dart';
 import 'package:digimartcustomer/screens/auth/login.dart';
 import 'package:digimartcustomer/screens/home/navigation.dart';
 import 'package:digimartcustomer/utils/helper/showLoading.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../main.dart';
 
 class UserController extends GetxController {
   static UserController instance = Get.find();
@@ -30,12 +34,18 @@ class UserController extends GetxController {
     ever(firebaseUser, _setInitialScreen);
   }
 
-  _setInitialScreen(User user) {
-    if (user == null) {
-      Get.offAll(() => LoginScreen());
+  _setInitialScreen(User user) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    initScreen = prefs.getInt("initScreen");
+    if (initScreen == 0 || initScreen == null) {
+      Get.offAll(() => OnboardingScreen());
     } else {
-      userModel.bindStream(listenToUser());
-      Get.offAll(() => NavigationPage());
+      if (user == null) {
+        Get.offAll(() => LoginScreen());
+      } else {
+        userModel.bindStream(listenToUser());
+        Get.offAll(() => NavigationPage());
+      }
     }
   }
 
@@ -130,10 +140,7 @@ class UserController extends GetxController {
     firebaseFirestore
         .collection(usersCollection)
         .doc(firebaseUser.value.uid)
-        .update(data)
-        .whenComplete(() {
-      Get.off(() => NavigationPage());
-    });
+        .update(data);
     logger.i("UPDATED");
   }
 

@@ -1,9 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:digimartcustomer/constants/appconstants.dart';
 import 'package:digimartcustomer/constants/controllers.dart';
+import 'package:digimartcustomer/screens/listview/galleryview.dart';
+import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+
+import 'orderdetails.dart';
 
 class OrderPage extends StatefulWidget {
   @override
@@ -25,143 +29,123 @@ class _OrderPageState extends State<OrderPage> {
               'My Orders',
               style: TextStyle(color: kprimarycolor),
             ),
+            actions: [
+              IconButton(
+                icon: Icon(Icons.list),
+                onPressed: () => Get.to(() => GalleryView()),
+              ),
+            ],
           ),
-          body: orderController.orders.isEmpty
-              ? Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Center(
-                    child: Text(
-                      "You don't have any orders yet",
-                      style: Theme.of(context).textTheme.headline4,
+          body: Obx(
+            () => orderController.orders.isEmpty
+                ? Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Center(
+                      child: Text(
+                        "You don't have any orders yet",
+                        style: Theme.of(context).textTheme.headline4,
+                      ),
                     ),
-                  ),
-                )
-              : Obx(
-                  () => ListView.builder(
+                  )
+                : ListView.builder(
                     itemCount: orderController.orders.length,
                     itemBuilder: (context, index) {
                       var data = orderController.orders[index];
 
                       String formattedDate = DateFormat('EEE, d-M-y | hh:mm')
                           .format(data.datetime.toDate());
-                      return Container(
-                        height: 130,
-                        margin:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                        decoration: BoxDecoration(
-                          color: textwhite,
-                          borderRadius: BorderRadius.circular(6),
-                          boxShadow: [
-                            BoxShadow(
-                                color: Theme.of(context)
-                                    .hintColor
-                                    .withOpacity(0.15),
-                                offset: Offset(0, 3),
-                                blurRadius: 10)
-                          ],
-                        ),
-                        child: Row(children: [
-                          Expanded(
-                            flex: 6,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: CachedNetworkImage(
-                                imageUrl: data.item[0].image,
-                                imageBuilder: (context, imageProvider) =>
-                                    Container(
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                        image: imageProvider,
-                                        fit: BoxFit.cover),
-                                    borderRadius: BorderRadius.circular(5),
-                                  ),
-                                ),
-                                placeholder: (context, url) => Image.asset(
-                                  'assets/images/loading.gif',
-                                  fit: BoxFit.contain,
-                                ),
-                              ),
-                            ),
-                          ),
-                          Spacer(
-                            flex: 1,
-                          ),
-                          Expanded(
-                            flex: 5,
+                      return Card(
+                          clipBehavior: Clip.antiAlias,
+                          child: InkWell(
+                            onTap: () => Get.to(() => OrderDetailsPage(
+                                  date: formattedDate,
+                                  orders: data,
+                                )),
                             child: Container(
-                              padding: const EdgeInsets.only(top: 5),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Text(
-                                    data.item[0].pname,
-                                    style: Theme.of(context).textTheme.title,
+                              height: 130,
+                              padding: const EdgeInsets.all(0),
+                              child: Row(children: [
+                                // Expanded(
+                                //   flex: 5,
+                                //   child: Padding(
+                                //     padding: const EdgeInsets.all(8.0),
+                                //     child: CachedNetworkImage(
+                                //       imageUrl: data.item[0].image,
+                                //       imageBuilder: (context, imageProvider) =>
+                                //           Container(
+                                //         decoration: BoxDecoration(
+                                //           image: DecorationImage(
+                                //               image: imageProvider,
+                                //               fit: BoxFit.cover),
+                                //           borderRadius:
+                                //               BorderRadius.circular(5),
+                                //         ),
+                                //       ),
+                                //       placeholder: (context, url) =>
+                                //           Image.asset(
+                                //         'assets/images/loading.gif',
+                                //         fit: BoxFit.contain,
+                                //       ),
+                                //     ),
+                                //   ),
+                                // ),
+
+                                Expanded(
+                                  child: Container(
+                                    padding:
+                                        const EdgeInsets.only(top: 5, left: 10),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Text(
+                                          data.item
+                                              .map((e) => e.pname)
+                                              .toString()
+                                              .replaceAll('(', '')
+                                              .replaceAll(')', ''),
+                                          overflow: TextOverflow.ellipsis,
+                                          style:
+                                              Theme.of(context).textTheme.title,
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(
+                                          '₹${data.item[0].price}/${data.item[0].variationtype}',
+                                          style: TextStyle(fontSize: 16),
+                                        ),
+                                        SizedBox(
+                                          height: 6,
+                                        ),
+                                        Text('Ordered On : $formattedDate'),
+                                        SizedBox(
+                                          height: 6,
+                                        ),
+                                        Text(
+                                          'Status : ${data.status}',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .subtitle2
+                                              .copyWith(
+                                                  color:
+                                                      data.status == 'Cancelled'
+                                                          ? Colors.red
+                                                          : Colors.green),
+                                        )
+                                      ],
+                                    ),
                                   ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text(
-                                    'Quantity : ${data.item[0].quantity} ${data.item[0].variationtype}',
-                                    style: TextStyle(fontSize: 13),
-                                  ),
-                                  SizedBox(
-                                    height: 5,
-                                  ),
-                                  Text(
-                                    'Price : ${data.item[0].cost}',
-                                    style: TextStyle(fontSize: 13),
-                                  ),
-                                  Spacer(
-                                    flex: 1,
-                                  ),
-                                  Align(
-                                    child: data.item.length > 1
-                                        ? Text(
-                                            '+${(data.item.length - 1)} item',
-                                            style: TextStyle(fontSize: 14.0),
-                                          )
-                                        : Container(),
-                                  )
-                                ],
-                              ),
+                                ),
+                                Icon(Icons.arrow_forward_ios)
+                              ]),
                             ),
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            // mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  'Ordered On',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ),
-                              Text(
-                                formattedDate,
-                                style: TextStyle(fontSize: 14.0),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 8.0),
-                                child: Text(
-                                  data.status,
-                                  style: TextStyle(fontSize: 14.0),
-                                ),
-                              ),
-                              TextButton(
-                                  onPressed: () {}, child: Text('View More'))
-                            ],
-                          ),
-                        ]),
-                      );
+                          ));
                     },
                   ),
-                )),
+          )),
     );
   }
 }

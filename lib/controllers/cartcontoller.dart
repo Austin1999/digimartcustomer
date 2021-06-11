@@ -26,7 +26,7 @@ class CartController extends GetxController {
           message: "${product.name} is already added",
         );
       } else {
-        String itemId = Uuid().toString();
+        String itemId = Uuid().v1().toString();
         userController.updateUserData({
           "cart": FieldValue.arrayUnion([
             {
@@ -37,7 +37,9 @@ class CartController extends GetxController {
               "quantity": 1,
               "price": product.price,
               "image": product.photo[0],
-              "cost": product.price
+              "cost": product.price,
+              'discount': product.discount,
+              "docid": product.docid
             }
           ])
         });
@@ -73,7 +75,7 @@ class CartController extends GetxController {
     totalCartPrice.value = 0.0;
     if (userModel.cart.isNotEmpty) {
       userModel.cart.forEach((cartItem) {
-        totalCartPrice += cartItem.cost;
+        totalCartPrice += double.parse(cartItem.cost);
       });
     }
   }

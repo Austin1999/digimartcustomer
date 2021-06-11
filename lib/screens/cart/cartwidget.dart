@@ -144,11 +144,19 @@ class CartItemWidget extends StatelessWidget {
                       cartItem.quantity.toString(),
                     ),
                   ),
-                  IconButton(
-                      icon: Icon(Icons.chevron_right),
-                      onPressed: () {
-                        cartController.increaseQuantity(cartItem);
-                      }),
+                  producsController.products
+                              .firstWhere((element) =>
+                                  element.productid == cartItem.productId)
+                              .quantity ==
+                          cartItem.quantity
+                      ? Container(
+                          width: 40,
+                        )
+                      : IconButton(
+                          icon: Icon(Icons.chevron_right),
+                          onPressed: () {
+                            cartController.increaseQuantity(cartItem);
+                          }),
                 ],
               ),
             ],
@@ -156,99 +164,5 @@ class CartItemWidget extends StatelessWidget {
         ],
       ),
     ));
-    // return Padding(
-    //   padding: const EdgeInsets.only(top: 8.0),
-    //   child: Column(
-    //     children: [
-    //       Row(
-    //         crossAxisAlignment: CrossAxisAlignment.start,
-    //         mainAxisAlignment: MainAxisAlignment.center,
-    //         children: [
-    //           ClipRRect(
-    //             borderRadius: BorderRadius.circular(12.0),
-    //             child: CachedNetworkImage(
-    //               imageUrl: cartItem.image,
-    //               height: 100,
-    //               width: 100,
-    //               fit: BoxFit.cover,
-    //               placeholder: (context, url) => Image.asset(
-    //                 'assets/images/loading.gif',
-    //                 fit: BoxFit.contain,
-    //               ),
-    //               errorWidget: (context, url, error) => Icon(Icons.error),
-    //             ),
-    //           ),
-    //           Container(
-    //             child: Column(
-    //               children: [
-    //                 Text(
-    //                   cartItem.name,
-    //                   style: TextStyle(
-    //                       color: textblack,
-    //                       fontWeight: FontWeight.bold,
-    //                       fontSize: 18.0),
-    //                 ),
-    //                 Padding(
-    //                   padding: const EdgeInsets.all(8.0),
-    //                   child: Text(
-    //                     "\₹${cartItem.price} / ${cartItem.variationtype}",
-    //                   ),
-    //                 ),
-    //               ],
-    //             ),
-    //           ),
-    // Wrap(
-    //   alignment: WrapAlignment.spaceBetween,
-    //   crossAxisAlignment: WrapCrossAlignment.end,
-    //   direction: Axis.vertical,
-    //   children: [
-    //     IconButton(
-    //       icon: Icon(Icons.delete_outline),
-    //       onPressed: () {
-    //         print(cartItem.toJson());
-    //         firebaseFirestore
-    //             .collection(userController.usersCollection)
-    //             .doc(userController.firebaseUser.value.uid)
-    //             .update({
-    //           'cart': [cartItem.toJson()]
-    //         });
-    //         // cartController.removeCartItem(cartItem);
-    //       },
-    //     ),
-    //     Row(
-    //       mainAxisAlignment: MainAxisAlignment.center,
-    //       children: [
-    //         IconButton(
-    //             icon: Icon(Icons.chevron_left),
-    //             onPressed: () {
-    //               cartController.decreaseQuantity(cartItem);
-    //             }),
-    //         Padding(
-    //           padding: const EdgeInsets.all(8.0),
-    //           child: Text(
-    //             cartItem.quantity.toString(),
-    //           ),
-    //         ),
-    //         IconButton(
-    //             icon: Icon(Icons.chevron_right),
-    //             onPressed: () {
-    //               cartController.increaseQuantity(cartItem);
-    //             }),
-    //       ],
-    //     ),
-    //     Padding(
-    //       padding: const EdgeInsets.all(14),
-    //       child: Text(
-    //         "\₹${cartItem.cost}",
-    //         style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
-    //       ),
-    //     ),
-    //   ],
-    // );
-    // ],
-    //       ),
-    //     ],
-    //   ),
-    // );
   }
 }

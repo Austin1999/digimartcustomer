@@ -17,42 +17,65 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // showProfileDialog() async {
-  //   await Future.delayed(Duration(milliseconds: 50));
+  showProfileDialog() async {
+    TextEditingController pincode = TextEditingController();
+    await Future.delayed(Duration(milliseconds: 50));
 
-  //   showDialog(
-  //     barrierDismissible: false,
-  //     context: context,
-  //     builder: (context) {
-  //       return AlertDialog(
-  //         title: Text('Complete your profile'),
-  //         content: Text(
-  //             'Please add your address and pincode to your profile section'),
-  //         actions: [
-  //           RaisedButton(
-  //               color: kprimarycolor,
-  //               child: Text(
-  //                 'Go to my Profile',
-  //                 style: TextStyle(color: textwhite),
-  //               ),
-  //               onPressed: () {
-  //                 Navigator.pop(context);
-  //                 Navigator.pop(context);
-  //                 Get.to(() => MyProfile());
-  //               })
-  //         ],
-  //       );
-  //     },
-  //   );
-  // }
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return SimpleDialog(
+          contentPadding: EdgeInsets.symmetric(horizontal: 20),
+          titlePadding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+          title: Text('Please Enter Your Pincode'),
+          children: [
+            TextFormField(
+              style: TextStyle(color: Theme.of(context).hintColor),
+              keyboardType: TextInputType.text,
+              decoration: InputDecoration(
+                hintText: 'Pincode',
+                labelText: 'Pincode',
+                hintStyle: Theme.of(context).textTheme.bodyText2.merge(
+                      TextStyle(color: Theme.of(context).focusColor),
+                    ),
+                enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                        color: Theme.of(context).hintColor.withOpacity(0.2))),
+                focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Theme.of(context).hintColor)),
+                floatingLabelBehavior: FloatingLabelBehavior.auto,
+                labelStyle: Theme.of(context).textTheme.bodyText2.merge(
+                      TextStyle(color: Theme.of(context).hintColor),
+                    ),
+              ),
+              validator: (input) =>
+                  input.trim().length < 3 ? 'Not a Valid Pincode' : null,
+              controller: pincode,
+            ),
+            MaterialButton(
+              onPressed: () {
+                userController.updateUserData({'pincode': pincode.text});
+                Navigator.pop(context);
+              },
+              child: Text(
+                'Save',
+                style: TextStyle(color: kprimarycolor),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
-  // @override
-  // void initState() {
-  //   // TODO: implement initState
-  //   if (userController.userModel.value.address == '' ||
-  //       userController.userModel.value.address == null) showProfileDialog();
-  //   super.initState();
-  // }
+  @override
+  void initState() {
+    // TODO: implement initState
+    if (userController.userModel.value.pincode == '' ||
+        userController.userModel.value.pincode == '') showProfileDialog();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

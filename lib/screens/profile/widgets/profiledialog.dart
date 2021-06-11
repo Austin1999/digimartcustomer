@@ -3,10 +3,6 @@ import 'package:digimartcustomer/constants/controllers.dart';
 import 'package:flutter/material.dart';
 
 class ProfileSettingsDialog extends StatefulWidget {
-  final VoidCallback onChanged;
-
-  ProfileSettingsDialog({Key key, this.onChanged}) : super(key: key);
-
   @override
   _ProfileSettingsDialogState createState() => _ProfileSettingsDialogState();
 }
@@ -14,9 +10,18 @@ class ProfileSettingsDialog extends StatefulWidget {
 class _ProfileSettingsDialogState extends State<ProfileSettingsDialog> {
   GlobalKey<FormState> _profileSettingsFormKey = new GlobalKey<FormState>();
 
+  TextEditingController phone =
+      TextEditingController(text: userController.userModel.value.phone);
+  TextEditingController address =
+      TextEditingController(text: userController.userModel.value.address);
+  TextEditingController name =
+      TextEditingController(text: userController.userModel.value.name);
+  TextEditingController pincode =
+      TextEditingController(text: userController.userModel.value.pincode);
+
   @override
   Widget build(BuildContext context) {
-    return FlatButton(
+    return FlatButton.icon(
       onPressed: () {
         showDialog(
             context: context,
@@ -41,52 +46,44 @@ class _ProfileSettingsDialogState extends State<ProfileSettingsDialog> {
                     child: Column(
                       children: <Widget>[
                         new TextFormField(
+                          controller: name,
                           style: TextStyle(color: Theme.of(context).hintColor),
                           keyboardType: TextInputType.text,
                           decoration: getInputDecoration(
                               hintText: 'Your Name', labelText: 'Full Name'),
-                          initialValue: userController.userModel.value.name,
                           validator: (input) => input.trim().length < 2
                               ? 'Not a Valid Name'
                               : null,
-                          onSaved: (input) =>
-                              userController.userModel.value..name = input,
                         ),
                         new TextFormField(
                           style: TextStyle(color: Theme.of(context).hintColor),
                           keyboardType: TextInputType.text,
                           decoration: getInputDecoration(
                               hintText: '+91 00000 0000', labelText: 'Phone'),
-                          initialValue: userController.userModel.value.phone,
                           validator: (input) => input.trim().length < 3
                               ? 'Not a Valid Phone'
                               : null,
-                          onSaved: (input) =>
-                              userController.userModel.value.phone = input,
+                          controller: phone,
                         ),
                         new TextFormField(
                           style: TextStyle(color: Theme.of(context).hintColor),
                           keyboardType: TextInputType.text,
                           decoration: getInputDecoration(
                               hintText: 'Your Address', labelText: 'Address'),
-                          initialValue: userController.userModel.value.address,
                           validator: (input) => input.trim().length < 3
                               ? 'Not a Valid Address'
                               : null,
-                          onSaved: (input) =>
-                              userController.userModel.value.address = input,
+                          controller: address,
                         ),
                         new TextFormField(
                           style: TextStyle(color: Theme.of(context).hintColor),
                           keyboardType: TextInputType.text,
                           decoration: getInputDecoration(
                               hintText: 'Pincode', labelText: 'Pincode'),
-                          initialValue: userController.userModel.value.pincode,
                           validator: (input) => input.trim().length < 3
                               ? 'Not a Valid Pincode'
                               : null,
-                          onSaved: (input) =>
-                              userController.userModel.value.pincode = input,
+                          controller: pincode,
                         ),
                       ],
                     ),
@@ -115,7 +112,8 @@ class _ProfileSettingsDialogState extends State<ProfileSettingsDialog> {
               );
             });
       },
-      child: Text(
+      icon: Icon(Icons.edit),
+      label: Text(
         'Edit',
         style: Theme.of(context).textTheme.bodyText2,
       ),
@@ -144,7 +142,12 @@ class _ProfileSettingsDialogState extends State<ProfileSettingsDialog> {
   void _submit() {
     if (_profileSettingsFormKey.currentState.validate()) {
       _profileSettingsFormKey.currentState.save();
-      widget.onChanged();
+      userController.updateUserData({
+        'name': name.text,
+        'address': address.text,
+        'phone': phone.text,
+        'pincode': pincode.text
+      });
       Navigator.pop(context);
     }
   }

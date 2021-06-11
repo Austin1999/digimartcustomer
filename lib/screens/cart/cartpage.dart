@@ -37,8 +37,10 @@ class _ShoppingCartWidgetState extends State<ShoppingCartWidget> {
         ),
       ),
       bottomNavigationBar: Obx(() {
-        double carttotal = userController.userModel.value.cart
-            .fold(0, (previousValue, element) => previousValue + element.cost);
+        double carttotal = userController.userModel.value.cart.fold(
+            0,
+            (previousValue, element) =>
+                previousValue + double.parse(element.cost));
         return Material(
           elevation: 5.0,
           child: Container(

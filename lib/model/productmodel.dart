@@ -13,13 +13,16 @@ class ProductModel {
   static const PRODUCTID = "product_id";
   static const RATINGS = "rating";
   static const PINCODE = "pincode";
+  static const TAX = "tax";
+  static const DISCOUNT = "discount";
+  static const SHIPPINGPRICE = "shippingfee";
 
   // List<Product> productList = [];
   String variationtype;
   String name;
   String category;
   List photo;
-  var price;
+  String price;
   List pincode;
   int quantity;
   List variation;
@@ -28,7 +31,11 @@ class ProductModel {
   List reviews;
   bool featured;
   String productid;
-  var rating;
+  String rating;
+  String tax;
+  String discount;
+  String shippingprice;
+  String docid;
   ProductModel(
       {this.name,
       this.category,
@@ -43,16 +50,20 @@ class ProductModel {
       this.rating,
       this.variationtype,
       this.reviews,
-      this.variation});
+      this.variation,
+      this.discount,
+      this.shippingprice,
+      this.docid,
+      this.tax});
 
-  ProductModel.fromMap(Map<String, dynamic> data) {
+  ProductModel.fromMap(Map<String, dynamic> data, documentid) {
     name = data[NAME];
     category = data[CATEGORY];
     description = data[DESCRIPTION];
     featured = data[FEATURED];
     onsale = data[ONSALE];
     photo = data[PHOTO];
-    price = data[PRICE].toDouble();
+    price = data[PRICE];
     productid = data[PRODUCTID];
     quantity = data[QUANTITY];
     rating = data[RATINGS];
@@ -60,6 +71,10 @@ class ProductModel {
     reviews = data[REVIEWS];
     variation = data[VARIATION];
     pincode = data[PINCODE];
+    discount = data[DISCOUNT];
+    shippingprice = data[SHIPPINGPRICE];
+    docid = documentid;
+    tax = data[TAX];
   }
 }
 

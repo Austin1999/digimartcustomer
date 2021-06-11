@@ -7,15 +7,21 @@ class OrderModel {
   static const PINCODE = "pincode";
   static const DATETIME = "datetime";
   static const STATUS = "deliverystatus";
+  static const TAX = 'tax';
+  static const SHIPPINGFEE = 'shippingfee';
+  static const DISCOUNT = "discount";
 
   String id;
-  double totalprice;
+  var totalprice;
   String cusname;
   String address;
   String phone;
   String pincode;
   var datetime;
   String status;
+  String tax;
+  String shippingfee;
+  var discount;
   List<OrderItemModel> item;
 
   OrderModel(
@@ -25,16 +31,23 @@ class OrderModel {
       this.cusname,
       this.totalprice,
       this.datetime,
+      this.discount,
       this.phone,
+      this.tax,
+      this.shippingfee,
       this.pincode});
 
   OrderModel.fromMap(Map<String, dynamic> data) {
     phone = data[PHONE];
     address = data[ADDRESS];
     cusname = data[CUSNAME];
+    totalprice = data[TOTALPRICE];
     pincode = data[PINCODE];
     datetime = data[DATETIME];
     status = data[STATUS];
+    tax = data[TAX];
+    discount = data[DISCOUNT];
+    shippingfee = data[SHIPPINGFEE];
     item = _convertCartItems(data[ITEM]);
   }
 }
@@ -62,15 +75,19 @@ class OrderItemModel {
   static const PRICE = "price";
   static const PRODUCT_ID = "productId";
   static const VARIATIONTYPE = "variationtype";
+  static const DISCOUNT = "discount";
+  static const TAX = 'tax';
+  static const SHIPPINGFEE = 'shippingfee';
 
   String id;
   String image;
   int quantity;
-  double cost;
+  String cost;
   String productId;
-  double price;
+  String price;
   String variationtype;
   String pname;
+  String discount;
 
   OrderItemModel({
     this.productId,
@@ -78,6 +95,7 @@ class OrderItemModel {
     this.image,
     this.pname,
     this.price,
+    this.discount,
     this.quantity,
     this.variationtype,
     this.cost,
@@ -92,6 +110,7 @@ class OrderItemModel {
     productId = data[PRODUCT_ID];
     price = data[PRICE];
     variationtype = data[VARIATIONTYPE];
+    discount = data[DISCOUNT];
   }
 
   Map<String, dynamic> toJson() => {
@@ -102,5 +121,6 @@ class OrderItemModel {
         QUANTITY: quantity,
         COST: price,
         PRICE: price,
+        DISCOUNT: discount,
       };
 }

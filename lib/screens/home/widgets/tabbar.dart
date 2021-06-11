@@ -1,3 +1,4 @@
+import 'package:badges/badges.dart';
 import 'package:digimartcustomer/constants/appconstants.dart';
 import 'package:flutter/material.dart';
 
@@ -20,9 +21,10 @@ class CustomBottomAppBar extends StatefulWidget {
     this.selectedColor,
     this.notchedShape,
     this.onTabSelected,
-  }) {
-    assert(this.items.length == 2 || this.items.length == 4);
-  }
+  });
+  // {
+  //   // assert(this.items.length == 2 || this.items.length == 5);
+  // }
   final List<CustomBottomAppBarItem> items;
   final String centerItemText;
   final double height;
@@ -57,7 +59,7 @@ class CustomBottomAppBarState extends State<CustomBottomAppBar> {
         onPressed: _updateIndex,
       );
     });
-    items.insert(items.length >> 1, _buildMiddleTabItem());
+    // items.insert(items.length >> 1, _buildMiddleTabItem());
 
     return BottomAppBar(
       shape: widget.notchedShape,
@@ -70,24 +72,24 @@ class CustomBottomAppBarState extends State<CustomBottomAppBar> {
     );
   }
 
-  Widget _buildMiddleTabItem() {
-    return Expanded(
-      child: SizedBox(
-        height: widget.height,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            SizedBox(height: widget.iconSize),
-            Text(
-              widget.centerItemText ?? '',
-              style: TextStyle(color: widget.color),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  // Widget _buildMiddleTabItem() {
+  //   return Expanded(
+  //     child: SizedBox(
+  //       height: widget.height,
+  //       child: Column(
+  //         mainAxisSize: MainAxisSize.min,
+  //         mainAxisAlignment: MainAxisAlignment.center,
+  //         children: <Widget>[
+  //           SizedBox(height: widget.iconSize),
+  //           Text(
+  //             widget.centerItemText ?? '',
+  //             style: TextStyle(color: widget.color),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _buildTabItem({
     CustomBottomAppBarItem item,
@@ -107,25 +109,39 @@ class CustomBottomAppBarState extends State<CustomBottomAppBar> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 item.badge
-                    ? Stack(children: <Widget>[
-                        Icon(item.iconData,
-                            color: color, size: widget.iconSize),
-                        new Positioned(
-                          // draw a red marble
-                          top: 0.0,
-                          right: 0.0,
-                          child: new CircleAvatar(
-                            radius: 6.5,
-                            backgroundColor: Colors.red,
-                            child: Text(
-                              item.value.toString(),
-                              style:
-                                  TextStyle(color: textwhite, fontSize: 12.0),
-                            ),
+                    ?
+                    // ? Stack(children: <Widget>[
+                    Badge(
+                        elevation: 0,
+                        padding: EdgeInsets.all(3.0),
+                        shape: BadgeShape.square,
+                        borderRadius: BorderRadius.circular(8),
+                        badgeContent: SizedBox(
+                          height: 12,
+                          child: Text(
+                            item.value.toString(),
+                            style: TextStyle(color: textwhite, fontSize: 10.0),
                           ),
                         ),
-                      ])
-                    : Icon(item.iconData, color: color, size: widget.iconSize),
+                        child: Icon(item.iconData,
+                            color: color, size: widget.iconSize))
+                    :
+                    // new Positioned(
+                    //   // draw a red marble
+                    //   top: 0.0,
+                    //   right: 0.0,
+                    //   child: new CircleAvatar(
+                    //     radius: 6.5,
+                    //     backgroundColor: Colors.red,
+                    //     child: Text(
+                    //       item.value.toString(),
+                    //       style:
+                    //           TextStyle(color: textwhite, fontSize: 12.0),
+                    //     ),
+                    //   ),
+                    // ),
+                    // ])
+                    Icon(item.iconData, color: color, size: widget.iconSize),
                 Text(
                   item.text,
                   style: TextStyle(color: color),

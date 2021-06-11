@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:digimartcustomer/constants/appconstants.dart';
 import 'package:digimartcustomer/constants/controllers.dart';
+import 'package:digimartcustomer/screens/home/navigation.dart';
+import 'package:digimartcustomer/screens/orders/orderpage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -29,7 +31,9 @@ class SideDrawer extends StatelessWidget {
                     currentAccountPicture: CircleAvatar(
                       backgroundColor: kprimarycolor,
                       child: Text(
-                        userController.userModel.value.name[0],
+                        userController.userModel.value.name.isEmpty
+                            ? 'G'
+                            : userController.userModel.value.name[0],
                         style: Theme.of(context)
                             .textTheme
                             .headline3
@@ -60,12 +64,14 @@ class SideDrawer extends StatelessWidget {
                     ),
                   ),
             ListTile(
+              onTap: () => Get.off(() => NavigationPage()),
               title: Text('Home'),
               leading: Icon(
                 Icons.home,
               ),
             ),
             ListTile(
+              onTap: () => Get.off(() => OrderPage()),
               title: Text('Orders'),
               leading: Icon(
                 Icons.list,

@@ -1,9 +1,11 @@
+import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:digimartcustomer/constants/appconstants.dart';
 import 'package:digimartcustomer/constants/controllers.dart';
 import 'package:digimartcustomer/model/productmodel.dart';
 import 'package:digimartcustomer/screens/cart/cartpage.dart';
 import 'package:digimartcustomer/screens/profile/myprofile.dart';
+import 'package:digimartcustomer/screens/search/searchpage.dart';
 import '../drawer.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -27,28 +29,29 @@ class _DetailScreenState extends State<DetailScreen> {
         drawer: SideDrawer(),
         appBar: AppBar(
           actions: [
+            IconButton(
+              icon: Icon(Icons.search),
+              onPressed: () => Get.to(() => ListSearch()),
+            ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Stack(children: <Widget>[
-                IconButton(
-                    icon: Icon(Icons.shopping_cart),
-                    onPressed: () => Get.off(() => ShoppingCartWidget())),
-                new Obx(
-                  () => Positioned(
-                    // draw a red marble
-                    top: 0.0,
-                    right: 0.0,
-                    child: new CircleAvatar(
-                      radius: 6.5,
-                      backgroundColor: Colors.red,
-                      child: Text(
-                        userController.userModel.value.cart?.length.toString(),
-                        style: TextStyle(color: textwhite, fontSize: 12.0),
-                      ),
-                    ),
+              padding:
+                  const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 16.0),
+              child: Badge(
+                elevation: 0,
+                // padding: EdgeInsets.all(3.0),
+                shape: BadgeShape.square,
+                borderRadius: BorderRadius.circular(8),
+                badgeContent: SizedBox(
+                  height: 12,
+                  child: Text(
+                    userController.userModel.value.cart?.length.toString(),
+                    style: TextStyle(color: textwhite, fontSize: 10.0),
                   ),
                 ),
-              ]),
+                child: InkWell(
+                    onTap: () => Get.off(() => ShoppingCartWidget()),
+                    child: Icon(Icons.shopping_cart)),
+              ),
             ),
           ],
           iconTheme: IconThemeData(color: kprimarycolor),
@@ -65,20 +68,201 @@ class _DetailScreenState extends State<DetailScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Center(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8.0),
-                    child: CachedNetworkImage(
-                      imageUrl: widget.product.photo[0],
-                      height: size.width * 0.5,
-                      width: size.width * 0.9,
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) => Image.asset(
-                        'assets/images/loading.gif',
-                        fit: BoxFit.contain,
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 10, vertical: 1),
+                  decoration: BoxDecoration(
+                    color: textwhite,
+                    borderRadius: BorderRadius.circular(6),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Theme.of(context).hintColor.withOpacity(0.15),
+                          offset: Offset(0, 3),
+                          blurRadius: 10)
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Center(
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8.0),
+                          child: CachedNetworkImage(
+                            imageUrl: widget.product.photo[0],
+                            height: size.width * 0.5,
+                            width: size.width * 0.9,
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) => Image.asset(
+                              'assets/images/loading.gif',
+                              fit: BoxFit.contain,
+                            ),
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.error),
+                          ),
+                        ),
                       ),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
-                    ),
+                      Row(
+                        children: [
+                          Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  '₹ ${widget.product.price} Per/ ${widget.product.variationtype} ',
+                                  style: TextStyle(
+                                      decoration: widget.product.onsale
+                                          ? TextDecoration.lineThrough
+                                          : null,
+                                      color: widget.product.onsale
+                                          ? textgrey
+                                          : textblack,
+                                      fontWeight: widget.product.onsale
+                                          ? FontWeight.normal
+                                          : FontWeight.bold,
+                                      fontSize:
+                                          widget.product.onsale ? 14 : 18),
+                                ),
+                              ),
+                              widget.product.onsale
+                                  ? Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        '₹ ${widget.product.discount} Per/ ${widget.product.variationtype} ',
+                                        style: TextStyle(
+                                            color: textblack,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: widget.product.onsale
+                                                ? 14
+                                                : 18),
+                                      ),
+                                    )
+                                  : Container(),
+                            ],
+                          ),
+                          Spacer(),
+                          // ignore: deprecated_member_use
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: OutlinedButton(
+                              style: ButtonStyle(
+                                side: MaterialStateProperty.all(BorderSide(
+                                    color: widget.product.quantity == 0 ||
+                                            !widget.product.pincode.contains(
+                                                userController
+                                                    .userModel.value.pincode)
+                                        ? Colors.red
+                                        : kprimarycolor)),
+                                foregroundColor: MaterialStateProperty.all(
+                                    widget.product.quantity == 0 ||
+                                            !widget.product.pincode.contains(
+                                                userController
+                                                    .userModel.value.pincode)
+                                        ? Colors.red
+                                        : kprimarycolor),
+                              ),
+                              onPressed: () {
+                                if (userController
+                                    .userModel.value.address.isEmpty) {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        title: Text('Complete your profile'),
+                                        content: Text(
+                                            'Please add your address and pincode to your profile section'),
+                                        actions: [
+                                          RaisedButton(
+                                              color: kprimarycolor,
+                                              child: Text(
+                                                'Go to my Profile',
+                                                style:
+                                                    TextStyle(color: textwhite),
+                                              ),
+                                              onPressed: () {
+                                                Get.to(() => MyProfile());
+                                              })
+                                        ],
+                                      );
+                                    },
+                                  );
+                                } else {
+                                  widget.product.quantity == 0
+                                      ? null
+                                      : widget.product.pincode.contains(
+                                              userController
+                                                  .userModel.value.pincode)
+                                          ? cartController
+                                              .addProductToCart(widget.product)
+                                          : null;
+                                }
+                              },
+                              child: Text(
+                                widget.product.quantity == 0
+                                    ? 'Out of Stock'
+                                    : widget.product.pincode.contains(
+                                            userController
+                                                .userModel.value.pincode)
+                                        ? 'Add to Cart'
+                                        : 'Not Deliverable',
+                                style: TextStyle(fontSize: 17.5),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      widget.product.quantity < 10 &&
+                              widget.product.quantity != 0
+                          ? Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 16.0, right: 16.0),
+                              child: Text(
+                                'Hurry! Only Few Left',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .subtitle1
+                                    .copyWith(
+                                      color: Colors.red,
+                                    ),
+                              ),
+                            )
+                          : Container(),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                        child: Row(children: [
+                          Text(
+                            'Shipping Price',
+                            style: Theme.of(context).textTheme.bodyText2,
+                          ),
+                          Spacer(),
+                          Text(
+                            orderController.ordercongig.shippingfee == '0'
+                                ? 'Free'
+                                : '₹${orderController.ordercongig.shippingfee}',
+                            style: TextStyle(color: textgrey),
+                          ),
+                        ]),
+                      ),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            left: 16.0, right: 16.0, bottom: 16.0),
+                        child: Row(children: [
+                          Text(
+                            'Tax',
+                            style: Theme.of(context).textTheme.bodyText2,
+                          ),
+                          Spacer(),
+                          Text(
+                            '${orderController.ordercongig.tax}%',
+                            style: TextStyle(color: textgrey),
+                          ),
+                        ]),
+                      ),
+                    ],
                   ),
                 ),
                 Container(
@@ -99,7 +283,7 @@ class _DetailScreenState extends State<DetailScreen> {
                       Padding(
                         padding: const EdgeInsets.only(top: 18.0, left: 14.0),
                         child: Text(
-                          widget.product.name,
+                          'Description',
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 20),
                         ),
@@ -205,16 +389,45 @@ class _DetailScreenState extends State<DetailScreen> {
                                             ),
                                           ),
                                         ),
-                                        RatingBarIndicator(
-                                          rating: dataval.rating,
-                                          itemBuilder: (context, index) => Icon(
-                                            Icons.star,
-                                            color: Colors.amber,
-                                          ),
-                                          itemCount: 5,
-                                          itemSize: 22.0,
-                                          direction: Axis.horizontal,
-                                        ),
+                                        dataval.quantity == 0
+                                            ? Text(
+                                                'Out of Stock',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .subtitle2
+                                                    .copyWith(
+                                                        color: Colors.red),
+                                              )
+                                            : !dataval.pincode.contains(
+                                                    userController.userModel
+                                                        .value.pincode)
+                                                ? Text(
+                                                    'Not Deliverable',
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .subtitle2
+                                                        .copyWith(
+                                                            color: Colors.red),
+                                                  )
+                                                : Text(
+                                                    'Deliverable',
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .subtitle2
+                                                        .copyWith(
+                                                            color:
+                                                                Colors.green),
+                                                  ),
+                                        // RatingBarIndicator(
+                                        //   rating: double.parse(dataval.rating),
+                                        //   itemBuilder: (context, index) => Icon(
+                                        //     Icons.star,
+                                        //     color: Colors.amber,
+                                        //   ),
+                                        //   itemCount: 5,
+                                        //   itemSize: 22.0,
+                                        //   direction: Axis.horizontal,
+                                        // ),
                                         SizedBox(height: 5),
                                         Text(
                                           dataval.name,
@@ -266,68 +479,12 @@ class _DetailScreenState extends State<DetailScreen> {
             ),
           ),
         ),
-        bottomNavigationBar: SizedBox(
-          // height: 70,
-          child: BottomAppBar(
-            child: Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    '₹ ${widget.product.price} Per/ ${widget.product.variationtype} ',
-                    style: TextStyle(
-                        color: textblack,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18),
-                  ),
-                ),
-                Spacer(),
-                // ignore: deprecated_member_use
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: OutlinedButton(
-                    style: ButtonStyle(
-                      side: MaterialStateProperty.all(
-                          BorderSide(color: kprimarycolor)),
-                      foregroundColor: MaterialStateProperty.all(kprimarycolor),
-                    ),
-                    onPressed: () {
-                      if (userController.userModel.value.address.isEmpty) {
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: Text('Complete your profile'),
-                              content: Text(
-                                  'Please add your address and pincode to your profile section'),
-                              actions: [
-                                RaisedButton(
-                                    color: kprimarycolor,
-                                    child: Text(
-                                      'Go to my Profile',
-                                      style: TextStyle(color: textwhite),
-                                    ),
-                                    onPressed: () {
-                                      Get.to(() => MyProfile());
-                                    })
-                              ],
-                            );
-                          },
-                        );
-                      } else {
-                        cartController.addProductToCart(widget.product);
-                      }
-                    },
-                    child: Text(
-                      'Add to Cart',
-                      style: TextStyle(fontSize: 17.5),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+        // bottomNavigationBar: SizedBox(
+        //   // height: 70,
+        //   child: BottomAppBar(
+        //     child:
+        //     ),
+        // ),
       ),
     );
   }

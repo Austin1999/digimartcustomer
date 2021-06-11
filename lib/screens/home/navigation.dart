@@ -27,9 +27,11 @@ class _NavigationPageState extends State<NavigationPage> {
   List<Widget> _widgetOptions = <Widget>[
     HomeScreen(),
     ShoppingCartWidget(),
+    ListSearch(),
     OrderPage(),
     ProfilePage()
   ];
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -37,39 +39,45 @@ class _NavigationPageState extends State<NavigationPage> {
         body: Center(
           child: _widgetOptions.elementAt(_selectedIndex),
         ),
-        bottomNavigationBar: CustomBottomAppBar(
-          centerItemText: 'Search',
-          color: Colors.grey,
-          backgroundColor: Colors.white,
-          selectedColor: kprimarycolor,
-          notchedShape: CircularNotchedRectangle(),
-          onTabSelected: _onItemTapped,
-          items: [
-            CustomBottomAppBarItem(
-                iconData: Icons.home, text: 'Home', badge: false),
-            CustomBottomAppBarItem(
-                iconData: Icons.shopping_cart,
-                text: 'Cart',
-                badge: true,
-                value: userController.userModel.value.cart?.length),
-            CustomBottomAppBarItem(
-                iconData: Icons.list,
-                text: 'Orders',
-                badge: true,
-                value: orderController.orders?.length),
-            CustomBottomAppBarItem(
-                iconData: Icons.account_circle, text: 'Profile', badge: false),
-          ],
+        bottomNavigationBar: Obx(
+          () => CustomBottomAppBar(
+            // centerItemText: 'Search',
+            color: Colors.grey,
+            backgroundColor: Colors.white,
+            selectedColor: kprimarycolor,
+            // notchedShape: CircularNotchedRectangle(),
+            onTabSelected: _onItemTapped,
+            items: [
+              CustomBottomAppBarItem(
+                  iconData: Icons.home, text: 'Home', badge: false),
+              CustomBottomAppBarItem(
+                  iconData: Icons.shopping_cart,
+                  text: 'Cart',
+                  badge: true,
+                  value: userController.userModel.value?.cart?.length ?? 0),
+              CustomBottomAppBarItem(
+                  iconData: Icons.search, text: 'Search', badge: false),
+              CustomBottomAppBarItem(
+                  iconData: Icons.list,
+                  text: 'Orders',
+                  badge: false,
+                  value: orderController?.orders?.length ?? 0),
+              CustomBottomAppBarItem(
+                  iconData: Icons.account_circle,
+                  text: 'Profile',
+                  badge: false),
+            ],
+          ),
         ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: kprimarycolor,
-          onPressed: () {
-            Get.to(() => ListSearch());
-          },
-          child: Icon(Icons.search),
-          elevation: 2.0,
-        ),
+        // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        // floatingActionButton: FloatingActionButton(
+        //   backgroundColor: kprimarycolor,
+        //   onPressed: () {
+        //     Get.to(() => ListSearch());
+        //   },
+        //   child: Icon(Icons.search),
+        //   elevation: 2.0,
+        // ),
       ),
     );
   }
