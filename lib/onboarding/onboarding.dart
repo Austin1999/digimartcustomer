@@ -52,11 +52,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     : Container(
                         alignment: Alignment.centerRight,
                         child: FlatButton(
-                          onPressed: () => print('Skip'),
+                          onPressed: () => Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => LoginScreen()),
+                              (route) => false),
                           child: Text(
                             'Skip',
                             style: TextStyle(
-                              color: kprimarycolor,
+                              color: textwhite,
                               fontSize: 16.0,
                             ),
                           ),
@@ -78,7 +82,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         height: size.height,
                         child: Center(
                           child: Text(
-                            'Digimart',
+                            'Groso',
                             style: Theme.of(context)
                                 .textTheme
                                 .headline4
@@ -88,95 +92,101 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       ),
                       Padding(
                         padding: EdgeInsets.all(40.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Center(
-                              child: Image(
-                                image: AssetImage(
-                                  'assets/images/ob1.png',
+                        child: SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Center(
+                                child: Image(
+                                  image: AssetImage(
+                                    'assets/images/ob1.png',
+                                  ),
+                                  height: 300.0,
+                                  width: 300.0,
                                 ),
-                                height: 300.0,
-                                width: 300.0,
                               ),
-                            ),
-                            SizedBox(height: 30.0),
-                            Text(
-                              'E Shopping',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline6
-                                  .copyWith(color: textblack),
-                            ),
-                            SizedBox(height: 15.0),
-                            Text('Explore top quality products',
+                              SizedBox(height: 30.0),
+                              Text(
+                                'E Shopping',
                                 style: Theme.of(context)
                                     .textTheme
                                     .headline6
-                                    .copyWith(color: textgrey)),
-                          ],
+                                    .copyWith(color: textblack),
+                              ),
+                              SizedBox(height: 15.0),
+                              Text('Explore top quality products',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline6
+                                      .copyWith(color: textgrey)),
+                            ],
+                          ),
                         ),
                       ),
                       Padding(
                         padding: EdgeInsets.all(40.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Center(
-                              child: Image(
-                                image: AssetImage(
-                                  'assets/images/ob2.png',
+                        child: SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Center(
+                                child: Image(
+                                  image: AssetImage(
+                                    'assets/images/ob2.png',
+                                  ),
+                                  height: 300.0,
+                                  width: 300.0,
                                 ),
-                                height: 300.0,
-                                width: 300.0,
                               ),
-                            ),
-                            SizedBox(height: 30.0),
-                            Text(
-                              'Delivery on the way',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline6
-                                  .copyWith(color: textblack),
-                            ),
-                            SizedBox(height: 15.0),
-                            Text('Get your order by speed delivery',
+                              SizedBox(height: 30.0),
+                              Text(
+                                'Delivery on the way',
                                 style: Theme.of(context)
                                     .textTheme
                                     .headline6
-                                    .copyWith(color: textgrey)),
-                          ],
+                                    .copyWith(color: textblack),
+                              ),
+                              SizedBox(height: 15.0),
+                              Text('Get your order by speed delivery',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline6
+                                      .copyWith(color: textgrey)),
+                            ],
+                          ),
                         ),
                       ),
                       Padding(
                         padding: EdgeInsets.all(40.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Center(
-                              child: Image(
-                                image: AssetImage(
-                                  'assets/images/ob3.png',
+                        child: SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Center(
+                                child: Image(
+                                  image: AssetImage(
+                                    'assets/images/ob3.png',
+                                  ),
+                                  height: 300.0,
+                                  width: 300.0,
                                 ),
-                                height: 300.0,
-                                width: 300.0,
                               ),
-                            ),
-                            SizedBox(height: 30.0),
-                            Text(
-                              'Delivery Arrived',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline6
-                                  .copyWith(color: textblack),
-                            ),
-                            SizedBox(height: 15.0),
-                            Text('Order is arrived at your place',
+                              SizedBox(height: 30.0),
+                              Text(
+                                'Delivery Arrived',
                                 style: Theme.of(context)
                                     .textTheme
                                     .headline6
-                                    .copyWith(color: textgrey)),
-                          ],
+                                    .copyWith(color: textblack),
+                              ),
+                              SizedBox(height: 15.0),
+                              Text('Order is arrived at your place',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline6
+                                      .copyWith(color: textgrey)),
+                            ],
+                          ),
                         ),
                       ),
                     ],
@@ -280,12 +290,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               width: double.infinity,
               color: Colors.white,
               child: GestureDetector(
-                onTap: () => Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => LoginScreen(),
-                  ),
-                ),
+                onTap: () => Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginScreen()),
+                    (route) => false),
                 child: Center(
                   child: Padding(
                     padding: EdgeInsets.only(bottom: 5.0),

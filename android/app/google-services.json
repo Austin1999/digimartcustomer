@@ -1,85 +1,42 @@
 {
   "project_info": {
-    "project_number": "249284721172",
-    "project_id": "digimart-44fde",
-    "storage_bucket": "digimart-44fde.appspot.com"
+    "project_number": "84239795584",
+    "project_id": "groso-da287",
+    "storage_bucket": "groso-da287.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:249284721172:android:8a095f6a457d6e77b2c501",
+        "mobilesdk_app_id": "1:84239795584:android:04c54f13e4b7fe16382d65",
         "android_client_info": {
-          "package_name": "com.disailor.digimart"
+          "package_name": "com.groso.digimartcustomer"
         }
       },
       "oauth_client": [
         {
-          "client_id": "249284721172-kamfmvvad62vbibnhkasg7ll2gt9c0j0.apps.googleusercontent.com",
+          "client_id": "84239795584-ia1ffli139cijjcr8k40ou8qg7jlsj20.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.disailor.digimart",
+            "package_name": "com.groso.digimartcustomer",
             "certificate_hash": "bd7c3240df97419309fa60d884ac7915d7a0cd7b"
           }
         },
         {
-          "client_id": "249284721172-eri430hjjktjckccm1p82s9bojv09tl4.apps.googleusercontent.com",
+          "client_id": "84239795584-7oc7d564t8er6kpbetr5bqivb19fa8h2.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCNtWnhg_jNJdkAHamZSNVWWqwrLonGrxE"
+          "current_key": "AIzaSyCzX3ITFfCRKvJxkUm1DNvu9P6VcKnn9AA"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "249284721172-eri430hjjktjckccm1p82s9bojv09tl4.apps.googleusercontent.com",
+              "client_id": "84239795584-7oc7d564t8er6kpbetr5bqivb19fa8h2.apps.googleusercontent.com",
               "client_type": 3
-            },
-            {
-              "client_id": "249284721172-p1c1c1prrdc0rva1g3uaoh5mtf66fj1p.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.digisailor.fthdaily"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:249284721172:android:47b9f86a12933a8ab2c501",
-        "android_client_info": {
-          "package_name": "com.disailor.digimartcustomer"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "249284721172-eri430hjjktjckccm1p82s9bojv09tl4.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCNtWnhg_jNJdkAHamZSNVWWqwrLonGrxE"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "249284721172-eri430hjjktjckccm1p82s9bojv09tl4.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "249284721172-p1c1c1prrdc0rva1g3uaoh5mtf66fj1p.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.digisailor.fthdaily"
-              }
             }
           ]
         }

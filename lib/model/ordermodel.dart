@@ -81,7 +81,7 @@ class OrderItemModel {
 
   String id;
   String image;
-  int quantity;
+  var quantity;
   String cost;
   String productId;
   String price;

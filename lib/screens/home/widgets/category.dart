@@ -59,25 +59,35 @@ class CategoryGrid extends StatelessWidget {
               style: Theme.of(context).textTheme.headline6,
             ),
           ),
-          Obx(
-            () => GridView.count(
-              primary: false,
-              shrinkWrap: true,
-              padding: const EdgeInsets.all(0),
-              crossAxisSpacing: 0,
-              mainAxisSpacing: 10,
-              crossAxisCount: 4,
-              childAspectRatio: ((width) / 500),
-              children:
-                  List.generate(producsController.categories.length, (index) {
-                return Padding(
-                  padding: const EdgeInsets.only(left: 18.0),
-                  child: getStructuredGridCell(
-                      producsController.categories[index]),
-                );
-              }),
-            ),
-          ),
+          producsController.categories.isEmpty
+              ? Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Center(
+                    child: Text(
+                      'No Categories Available',
+                      style: Theme.of(context).textTheme.subtitle1,
+                    ),
+                  ),
+                )
+              : Obx(
+                  () => GridView.count(
+                    primary: false,
+                    shrinkWrap: true,
+                    padding: const EdgeInsets.all(0),
+                    crossAxisSpacing: 0,
+                    mainAxisSpacing: 10,
+                    crossAxisCount: 4,
+                    childAspectRatio: ((width) / 500),
+                    children: List.generate(producsController.categories.length,
+                        (index) {
+                      return Padding(
+                        padding: const EdgeInsets.only(left: 18.0),
+                        child: getStructuredGridCell(
+                            producsController.categories[index]),
+                      );
+                    }),
+                  ),
+                ),
         ],
       ),
     );

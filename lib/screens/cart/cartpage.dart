@@ -87,7 +87,7 @@ class _ShoppingCartWidgetState extends State<ShoppingCartWidget> {
                         : Theme.of(context).primaryColor,
                     alignment: Alignment.center,
                     child: Text(
-                      'Pay Now',
+                      'Order Now',
                       style: TextStyle(color: Colors.white, fontSize: 15.0),
                     ),
                   ),

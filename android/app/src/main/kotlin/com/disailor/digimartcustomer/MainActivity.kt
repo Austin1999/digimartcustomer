@@ -1,4 +1,4 @@
-package com.disailor.digimartcustomer
+package com.groso.digimartcustomer
 
 import io.flutter.embedding.android.FlutterActivity
 

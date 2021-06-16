@@ -133,30 +133,30 @@ class CartItemWidget extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  IconButton(
-                      icon: Icon(Icons.chevron_left),
-                      onPressed: () {
-                        cartController.decreaseQuantity(cartItem);
-                      }),
+                  // IconButton(
+                  //     icon: Icon(Icons.chevron_left),
+                  //     onPressed: () {
+                  //       cartController.decreaseQuantity(cartItem);
+                  //     }),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       cartItem.quantity.toString(),
                     ),
                   ),
-                  producsController.products
-                              .firstWhere((element) =>
-                                  element.productid == cartItem.productId)
-                              .quantity ==
-                          cartItem.quantity
-                      ? Container(
-                          width: 40,
-                        )
-                      : IconButton(
-                          icon: Icon(Icons.chevron_right),
-                          onPressed: () {
-                            cartController.increaseQuantity(cartItem);
-                          }),
+                  // producsController.products
+                  //             .firstWhere((element) =>
+                  //                 element.productid == cartItem.productId)
+                  //             .quantity ==
+                  //         cartItem.quantity
+                  //     ? Container(
+                  //         width: 40,
+                  //       )
+                  //     : IconButton(
+                  //         icon: Icon(Icons.chevron_right),
+                  //         onPressed: () {
+                  //           cartController.increaseQuantity(cartItem);
+                  //         }),
                 ],
               ),
             ],

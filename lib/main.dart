@@ -11,7 +11,7 @@ import 'controllers/productcontroller.dart';
 import 'onboarding/onboarding.dart';
 import 'screens/splash/splashscreen.dart';
 
-int initScreen = 0;
+RxInt initScreen = 0.obs;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initialization.then((value) {
@@ -22,9 +22,10 @@ Future<void> main() async {
     Get.put(CartController());
     // Get.put(PaymentsController());
   });
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  initScreen = prefs.getInt("initScreen");
-  await prefs.setInt("initScreen", 1);
+  // SharedPreferences prefs = await SharedPreferences.getInstance();
+  // initScreen = prefs.getInt("initScreen");
+  // await prefs.setInt("initScreen", 1);
+  initScreen.value = 1;
   runApp(MyApp());
 }
 

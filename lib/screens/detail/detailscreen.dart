@@ -4,6 +4,7 @@ import 'package:digimartcustomer/constants/appconstants.dart';
 import 'package:digimartcustomer/constants/controllers.dart';
 import 'package:digimartcustomer/model/productmodel.dart';
 import 'package:digimartcustomer/screens/cart/cartpage.dart';
+import 'package:digimartcustomer/screens/home/navigation.dart';
 import 'package:digimartcustomer/screens/profile/myprofile.dart';
 import 'package:digimartcustomer/screens/search/searchpage.dart';
 import '../drawer.dart';
@@ -20,6 +21,7 @@ class DetailScreen extends StatefulWidget {
 }
 
 class _DetailScreenState extends State<DetailScreen> {
+  String selected = '';
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -31,7 +33,11 @@ class _DetailScreenState extends State<DetailScreen> {
           actions: [
             IconButton(
               icon: Icon(Icons.search),
-              onPressed: () => Get.to(() => ListSearch()),
+              onPressed: () => Navigator.pushAndRemoveUntil(Get.context,
+                  MaterialPageRoute(builder: (context) {
+                appController.selectedIndex.value = 2;
+                return NavigationPage();
+              }), (route) => false),
             ),
             Padding(
               padding:
@@ -43,13 +49,19 @@ class _DetailScreenState extends State<DetailScreen> {
                 borderRadius: BorderRadius.circular(8),
                 badgeContent: SizedBox(
                   height: 12,
-                  child: Text(
-                    userController.userModel.value.cart?.length.toString(),
-                    style: TextStyle(color: textwhite, fontSize: 10.0),
+                  child: Obx(
+                    () => Text(
+                      userController.userModel.value.cart?.length.toString(),
+                      style: TextStyle(color: textwhite, fontSize: 10.0),
+                    ),
                   ),
                 ),
                 child: InkWell(
-                    onTap: () => Get.off(() => ShoppingCartWidget()),
+                    onTap: () => Navigator.pushAndRemoveUntil(Get.context,
+                            MaterialPageRoute(builder: (context) {
+                          appController.selectedIndex.value = 1;
+                          return NavigationPage();
+                        }), (route) => false),
                     child: Icon(Icons.shopping_cart)),
               ),
             ),
@@ -107,7 +119,9 @@ class _DetailScreenState extends State<DetailScreen> {
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
-                                  '₹ ${widget.product.price} Per/ ${widget.product.variationtype} ',
+                                  selected == ''
+                                      ? '₹ ${widget.product.price} Per/ ${widget.product.variationtype} '
+                                      : '₹${selected.replaceAll('G', '').replaceAll('g', '').replaceAll('K', '').replaceAll('k', '').replaceAll('L', '').replaceAll('l', '').replaceAll('m', '').replaceAll('M', '').length == 3 ? (int.parse(widget.product.price) * (int.parse(selected.replaceAll('g', '').replaceAll('K', '').replaceAll('k', '').replaceAll('L', '').replaceAll('l', '').replaceAll('m', '').replaceAll('M', '')) / 1000)).toString() : (int.parse(widget.product.price) * (int.parse(selected.replaceAll('g', '').replaceAll('K', '').replaceAll('k', '').replaceAll('L', '').replaceAll('l', '').replaceAll('m', '').replaceAll('M', '')))).toString()}',
                                   style: TextStyle(
                                       decoration: widget.product.onsale
                                           ? TextDecoration.lineThrough
@@ -126,7 +140,9 @@ class _DetailScreenState extends State<DetailScreen> {
                                   ? Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: Text(
-                                        '₹ ${widget.product.discount} Per/ ${widget.product.variationtype} ',
+                                        selected == ''
+                                            ? '₹ ${widget.product.discount} Per/ ${widget.product.variationtype} '
+                                            : '₹${selected.replaceAll('G', '').replaceAll('g', '').replaceAll('K', '').replaceAll('k', '').replaceAll('L', '').replaceAll('l', '').replaceAll('m', '').replaceAll('M', '').length == 3 ? (int.parse(widget.product.discount) * (int.parse(selected.replaceAll('g', '').replaceAll('K', '').replaceAll('k', '').replaceAll('L', '').replaceAll('l', '').replaceAll('m', '').replaceAll('M', '')) / 1000)).toString() : (int.parse(widget.product.discount) * (int.parse(selected.replaceAll('g', '').replaceAll('K', '').replaceAll('k', '').replaceAll('L', '').replaceAll('l', '').replaceAll('m', '').replaceAll('M', '')))).toString()}',
                                         style: TextStyle(
                                             color: textblack,
                                             fontWeight: FontWeight.bold,
@@ -145,19 +161,23 @@ class _DetailScreenState extends State<DetailScreen> {
                             child: OutlinedButton(
                               style: ButtonStyle(
                                 side: MaterialStateProperty.all(BorderSide(
-                                    color: widget.product.quantity == 0 ||
+                                    color: widget.product.quantity < 1 ||
                                             !widget.product.pincode.contains(
                                                 userController
                                                     .userModel.value.pincode)
                                         ? Colors.red
-                                        : kprimarycolor)),
+                                        : selected == ''
+                                            ? textgrey
+                                            : kprimarycolor)),
                                 foregroundColor: MaterialStateProperty.all(
-                                    widget.product.quantity == 0 ||
+                                    widget.product.quantity <= 1 ||
                                             !widget.product.pincode.contains(
                                                 userController
                                                     .userModel.value.pincode)
                                         ? Colors.red
-                                        : kprimarycolor),
+                                        : selected == ''
+                                            ? textgrey
+                                            : kprimarycolor),
                               ),
                               onPressed: () {
                                 if (userController
@@ -185,18 +205,23 @@ class _DetailScreenState extends State<DetailScreen> {
                                     },
                                   );
                                 } else {
-                                  widget.product.quantity == 0
+                                  widget.product.quantity <= 1
                                       ? null
-                                      : widget.product.pincode.contains(
-                                              userController
-                                                  .userModel.value.pincode)
-                                          ? cartController
-                                              .addProductToCart(widget.product)
-                                          : null;
+                                      : selected == ''
+                                          ? Get.rawSnackbar(
+                                              message: 'Please Select Quantity',
+                                              duration:
+                                                  Duration(milliseconds: 1800))
+                                          : widget.product.pincode.contains(
+                                                  userController
+                                                      .userModel.value.pincode)
+                                              ? cartController.addProductToCart(
+                                                  widget.product, selected)
+                                              : null;
                                 }
                               },
                               child: Text(
-                                widget.product.quantity == 0
+                                widget.product.quantity <= 1
                                     ? 'Out of Stock'
                                     : widget.product.pincode.contains(
                                             userController
@@ -261,6 +286,55 @@ class _DetailScreenState extends State<DetailScreen> {
                             style: TextStyle(color: textgrey),
                           ),
                         ]),
+                      ),
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Container(
+                          height: 50,
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            physics: BouncingScrollPhysics(),
+                            itemCount: widget.product.variation.length,
+                            itemBuilder: (context, index) {
+                              var item = widget.product.variation[index];
+                              return InkWell(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Container(
+                                    width: 80.0,
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: selected != item
+                                              ? textgrey
+                                              : kprimarycolor),
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      color: selected != item
+                                          ? Colors.white
+                                          : kprimarycolor,
+                                    ),
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Text(
+                                      item,
+                                      style: TextStyle(
+                                          color: selected != item
+                                              ? Colors.black
+                                              : Colors.white,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
+                                onTap: () {
+                                  setState(() {
+                                    selected = item;
+                                  });
+                                },
+                              );
+                              // return Text(options[index].name);
+                            },
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -389,7 +463,7 @@ class _DetailScreenState extends State<DetailScreen> {
                                             ),
                                           ),
                                         ),
-                                        dataval.quantity == 0
+                                        dataval.quantity <= 1
                                             ? Text(
                                                 'Out of Stock',
                                                 style: Theme.of(context)
@@ -446,25 +520,25 @@ class _DetailScreenState extends State<DetailScreen> {
                                         )
                                       ],
                                     ),
-                                    Container(
-                                      margin: EdgeInsets.all(10),
-                                      width: 40,
-                                      height: 40,
-                                      child: FlatButton(
-                                        padding: EdgeInsets.all(0),
-                                        onPressed: () {
-                                          cartController
-                                              .addProductToCart(dataval);
-                                        },
-                                        child: Icon(
-                                          Icons.add_shopping_cart,
-                                          color: textwhite,
-                                          size: 24,
-                                        ),
-                                        color: kprimarycolor,
-                                        shape: StadiumBorder(),
-                                      ),
-                                    ),
+                                    // Container(
+                                    //   margin: EdgeInsets.all(10),
+                                    //   width: 40,
+                                    //   height: 40,
+                                    //   child: FlatButton(
+                                    //     padding: EdgeInsets.all(0),
+                                    //     onPressed: () {
+                                    //       cartController
+                                    //           .addProductToCart(dataval);
+                                    //     },
+                                    //     child: Icon(
+                                    //       Icons.add_shopping_cart,
+                                    //       color: textwhite,
+                                    //       size: 24,
+                                    //     ),
+                                    //     color: kprimarycolor,
+                                    //     shape: StadiumBorder(),
+                                    //   ),
+                                    // ),
                                   ],
                                 ),
                               );

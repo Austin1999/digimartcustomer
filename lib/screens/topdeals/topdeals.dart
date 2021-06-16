@@ -165,62 +165,62 @@ class TopDeals extends StatelessWidget {
                                     )
                                   ],
                                 ),
-                                Container(
-                                  margin: EdgeInsets.all(10),
-                                  width: 40,
-                                  height: 40,
-                                  child: FlatButton(
-                                    padding: EdgeInsets.all(0),
-                                    onPressed: () {
-                                      if (userController
-                                          .userModel.value.address.isEmpty) {
-                                        showDialog(
-                                          context: context,
-                                          builder: (context) {
-                                            return AlertDialog(
-                                              title:
-                                                  Text('Complete your profile'),
-                                              content: Text(
-                                                  'Please add your address and pincode to your profile section'),
-                                              actions: [
-                                                RaisedButton(
-                                                    color: kprimarycolor,
-                                                    child: Text(
-                                                      'Go to my Profile',
-                                                      style: TextStyle(
-                                                          color: textwhite),
-                                                    ),
-                                                    onPressed: () {
-                                                      Get.to(() => MyProfile());
-                                                    })
-                                              ],
-                                            );
-                                          },
-                                        );
-                                      } else {
-                                        dataval.quantity == 0
-                                            ? Get.rawSnackbar(
-                                                message: 'Product Out Of Stock')
-                                            : !dataval.pincode.contains(
-                                                    userController.userModel
-                                                        .value.pincode)
-                                                ? Get.rawSnackbar(
-                                                    message: 'Not Deliverable')
-                                                : cartController
-                                                    .addProductToCart(dataval);
-                                      }
-                                    },
-                                    child: Icon(
-                                      Icons.add_shopping_cart,
-                                      color: textwhite,
-                                      size: 24,
-                                    ),
-                                    color: dataval.quantity == 0
-                                        ? Colors.red
-                                        : kprimarycolor,
-                                    shape: StadiumBorder(),
-                                  ),
-                                ),
+                                // Container(
+                                //   margin: EdgeInsets.all(10),
+                                //   width: 40,
+                                //   height: 40,
+                                //   child: FlatButton(
+                                //     padding: EdgeInsets.all(0),
+                                //     onPressed: () {
+                                //       if (userController
+                                //           .userModel.value.address.isEmpty) {
+                                //         showDialog(
+                                //           context: context,
+                                //           builder: (context) {
+                                //             return AlertDialog(
+                                //               title:
+                                //                   Text('Complete your profile'),
+                                //               content: Text(
+                                //                   'Please add your address and pincode to your profile section'),
+                                //               actions: [
+                                //                 RaisedButton(
+                                //                     color: kprimarycolor,
+                                //                     child: Text(
+                                //                       'Go to my Profile',
+                                //                       style: TextStyle(
+                                //                           color: textwhite),
+                                //                     ),
+                                //                     onPressed: () {
+                                //                       Get.to(() => MyProfile());
+                                //                     })
+                                //               ],
+                                //             );
+                                //           },
+                                //         );
+                                //       } else {
+                                //         dataval.quantity == 0
+                                //             ? Get.rawSnackbar(
+                                //                 message: 'Product Out Of Stock')
+                                //             : !dataval.pincode.contains(
+                                //                     userController.userModel
+                                //                         .value.pincode)
+                                //                 ? Get.rawSnackbar(
+                                //                     message: 'Not Deliverable')
+                                //                 : cartController
+                                //                     .addProductToCart(dataval);
+                                //       }
+                                //     },
+                                //     child: Icon(
+                                //       Icons.add_shopping_cart,
+                                //       color: textwhite,
+                                //       size: 24,
+                                //     ),
+                                //     color: dataval.quantity == 0
+                                //         ? Colors.red
+                                //         : kprimarycolor,
+                                //     shape: StadiumBorder(),
+                                //   ),
+                                // ),
                               ],
                             ),
                           );

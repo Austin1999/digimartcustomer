@@ -64,14 +64,22 @@ class SideDrawer extends StatelessWidget {
                     ),
                   ),
             ListTile(
-              onTap: () => Get.off(() => NavigationPage()),
+              onTap: () => Navigator.pushAndRemoveUntil(Get.context,
+                  MaterialPageRoute(builder: (context) {
+                appController.selectedIndex.value = 0;
+                return NavigationPage();
+              }), (route) => false),
               title: Text('Home'),
               leading: Icon(
                 Icons.home,
               ),
             ),
             ListTile(
-              onTap: () => Get.off(() => OrderPage()),
+              onTap: () => Navigator.pushAndRemoveUntil(Get.context,
+                  MaterialPageRoute(builder: (context) {
+                appController.selectedIndex.value = 3;
+                return NavigationPage();
+              }), (route) => false),
               title: Text('Orders'),
               leading: Icon(
                 Icons.list,

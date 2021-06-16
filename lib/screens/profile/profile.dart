@@ -1,12 +1,14 @@
 import 'package:digimartcustomer/constants/appconstants.dart';
 import 'package:digimartcustomer/constants/controllers.dart';
 import 'package:digimartcustomer/screens/cart/cartpage.dart';
+import 'package:digimartcustomer/screens/home/navigation.dart';
 import 'package:digimartcustomer/screens/listupload/listupload.dart';
 import 'package:digimartcustomer/screens/orders/orderpage.dart';
 import 'package:digimartcustomer/screens/profile/myprofile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -59,7 +61,11 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               Divider(),
               ListTile(
-                onTap: () => Get.to(() => OrderPage()),
+                onTap: () => Navigator.pushAndRemoveUntil(Get.context,
+                    MaterialPageRoute(builder: (context) {
+                  appController.selectedIndex.value = 3;
+                  return NavigationPage();
+                }), (route) => false),
                 leading: Icon(
                   Icons.list,
                   color: kprimarycolor,
@@ -82,13 +88,19 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               Divider(),
               ListTile(
-                onTap: () => Get.to(() => ShoppingCartWidget()),
+                onTap: () => Navigator.pushAndRemoveUntil(Get.context,
+                    MaterialPageRoute(builder: (context) {
+                  appController.selectedIndex.value = 1;
+                  return NavigationPage();
+                }), (route) => false),
                 leading:
                     Icon(Icons.shopping_cart_outlined, color: kprimarycolor),
                 title: Text('My Cart'),
               ),
               Divider(),
               ListTile(
+                onTap: () async => await launch(
+                    'https://play.google.com/store/apps/details?id=com.disailor.digimartcustomer'),
                 leading: Icon(Icons.star_rate_outlined, color: kprimarycolor),
                 title: Text('Rate us'),
               ),

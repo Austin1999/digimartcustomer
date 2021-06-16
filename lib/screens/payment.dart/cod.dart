@@ -30,15 +30,68 @@ class _CODState extends State<COD> {
       TextEditingController(text: userController.userModel.value.pincode);
 
   double discount = userController.userModel.value.cart.fold(
-      0,
-      (previousValue, element) =>
-          previousValue + (int.parse(element.discount) * element.quantity));
+    0,
+    (previousValue, element) {
+      print(element.quantity
+          .replaceAll('g', '')
+          .replaceAll('K', '')
+          .replaceAll('k', '')
+          .replaceAll('L', '')
+          .replaceAll('m', '')
+          .replaceAll('l', '')
+          .length);
+      return element.quantity
+                  .replaceAll('K', '')
+                  .replaceAll('k', '')
+                  .replaceAll('L', '')
+                  .replaceAll('l', '')
+                  .replaceAll('m', '')
+                  .replaceAll('M', '')
+                  .replaceAll('g', '')
+                  .replaceAll('G', '')
+                  .length ==
+              3
+          ? previousValue +
+              (int.parse(element.discount) *
+                  (int.parse(element.quantity
+                          .replaceAll('K', '')
+                          .replaceAll('k', '')
+                          .replaceAll('L', '')
+                          .replaceAll('l', '')
+                          .replaceAll('m', '')
+                          .replaceAll('M', '')
+                          .replaceAll('g', '')
+                          .replaceAll('G', '')) /
+                      1000))
+          : previousValue +
+              (int.parse(element.discount) *
+                  (int.parse(element.quantity
+                      .replaceAll('K', '')
+                      .replaceAll('k', '')
+                      .replaceAll('L', '')
+                      .replaceAll('l', '')
+                      .replaceAll('m', '')
+                      .replaceAll('M', '')
+                      .replaceAll('g', '')
+                      .replaceAll('G', ''))));
+      // : int.parse(
+      //     element.quantity
+      //         .replaceAll('g', '')
+      //         .replaceAll('Kg', '')
+      //         .replaceAll('kg', '')
+      //         .replaceAll('L', '')
+      //         .replaceAll('ml', ''),
+      // )
+    },
+  );
   double carttotal = userController.userModel.value.cart.fold(
     0,
     (previousValue, element) => previousValue + double.parse(element.cost),
   );
   @override
   Widget build(BuildContext context) {
+    print('Discount : $discount');
+    print('Cart Total : $carttotal');
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -112,7 +165,7 @@ class _CODState extends State<COD> {
                               orderController.ordercongig.shippingfee,
                           'tax': orderController.ordercongig.tax,
                           'discount': (carttotal - discount)
-                        }).whenComplete(() {
+                        }).then((v) {
                           firebaseFirestore.collection('orders').add({
                             'item':
                                 widget.product.map((e) => e.toJson()).toList(),
@@ -122,6 +175,7 @@ class _CODState extends State<COD> {
                             'phone': userController.userModel.value.phone,
                             'datetime': DateTime.now(),
                             'deliverystatus': 'Order Placed',
+                            "docId": v.id,
                             'userId': userController.firebaseUser.value.uid,
                             'totalprice': totalPrice,
                             'shippingfee':
@@ -136,8 +190,38 @@ class _CODState extends State<COD> {
                                   .collection('products')
                                   .doc(element.docid)
                                   .update({
-                                'quantity':
-                                    FieldValue.increment(-element.quantity)
+                                'quantity': element.quantity
+                                            .replaceAll('K', '')
+                                            .replaceAll('k', '')
+                                            .replaceAll('L', '')
+                                            .replaceAll('l', '')
+                                            .replaceAll('m', '')
+                                            .replaceAll('M', '')
+                                            .replaceAll('g', '')
+                                            .replaceAll('G', '')
+                                            .length ==
+                                        3
+                                    ? FieldValue.increment(-((int.parse(element
+                                            .quantity
+                                            .replaceAll('K', '')
+                                            .replaceAll('k', '')
+                                            .replaceAll('L', '')
+                                            .replaceAll('l', '')
+                                            .replaceAll('m', '')
+                                            .replaceAll('M', '')
+                                            .replaceAll('g', '')
+                                            .replaceAll('G', ''))) /
+                                        1000))
+                                    : FieldValue.increment(-((int.parse(element
+                                        .quantity
+                                        .replaceAll('K', '')
+                                        .replaceAll('k', '')
+                                        .replaceAll('L', '')
+                                        .replaceAll('l', '')
+                                        .replaceAll('m', '')
+                                        .replaceAll('M', '')
+                                        .replaceAll('g', '')
+                                        .replaceAll('G', ''))))),
                               });
                             });
 

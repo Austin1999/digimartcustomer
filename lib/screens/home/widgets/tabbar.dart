@@ -1,5 +1,7 @@
 import 'package:badges/badges.dart';
 import 'package:digimartcustomer/constants/appconstants.dart';
+import 'package:digimartcustomer/constants/controllers.dart';
+import 'package:digimartcustomer/controllers/appcontroller.dart';
 import 'package:flutter/material.dart';
 
 class CustomBottomAppBarItem {
@@ -41,12 +43,10 @@ class CustomBottomAppBar extends StatefulWidget {
 }
 
 class CustomBottomAppBarState extends State<CustomBottomAppBar> {
-  int _selectedIndex = 0;
-
   _updateIndex(int index) {
     widget.onTabSelected(index);
     setState(() {
-      _selectedIndex = index;
+      appController.selectedIndex.value = index;
     });
   }
 
@@ -96,7 +96,9 @@ class CustomBottomAppBarState extends State<CustomBottomAppBar> {
     int index,
     ValueChanged<int> onPressed,
   }) {
-    Color color = _selectedIndex == index ? widget.selectedColor : widget.color;
+    Color color = appController.selectedIndex.value == index
+        ? widget.selectedColor
+        : widget.color;
     return Expanded(
       child: SizedBox(
         height: widget.height,

@@ -4,6 +4,8 @@ import 'package:digimartcustomer/constants/controllers.dart';
 import 'package:digimartcustomer/model/cartitemmodel.dart';
 import 'package:digimartcustomer/model/productmodel.dart';
 import 'package:digimartcustomer/model/usermodel.dart';
+import 'package:digimartcustomer/screens/cart/cartpage.dart';
+import 'package:digimartcustomer/screens/home/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
@@ -18,10 +20,23 @@ class CartController extends GetxController {
     ever(userController.userModel, changeCartTotalPrice);
   }
 
-  void addProductToCart(ProductModel product) {
+  void addProductToCart(ProductModel product, String quantity) {
     try {
       if (_isItemAlreadyAdded(product)) {
         Get.rawSnackbar(
+          mainButton: MaterialButton(
+            onPressed: () {
+              Navigator.pushAndRemoveUntil(Get.context,
+                  MaterialPageRoute(builder: (context) {
+                appController.selectedIndex.value = 1;
+                return NavigationPage();
+              }), (route) => false);
+            },
+            child: Text(
+              'Go to MyCarts',
+              style: TextStyle(color: Colors.yellow),
+            ),
+          ),
           title: "Check your cart",
           message: "${product.name} is already added",
         );
@@ -34,16 +49,53 @@ class CartController extends GetxController {
               "id": itemId,
               "productId": product.productid,
               "name": product.name,
-              "quantity": 1,
+              "quantity": quantity,
               "price": product.price,
               "image": product.photo[0],
-              "cost": product.price,
+              "cost": quantity
+                          .replaceAll('g', '')
+                          .replaceAll('K', '')
+                          .replaceAll('k', '')
+                          .replaceAll('L', '')
+                          .replaceAll('m', '')
+                          .length ==
+                      3
+                  ? (int.parse(product.price) *
+                          (int.parse(quantity
+                                  .replaceAll('g', '')
+                                  .replaceAll('K', '')
+                                  .replaceAll('k', '')
+                                  .replaceAll('L', '')
+                                  .replaceAll('m', '')) /
+                              1000))
+                      .toString()
+                  : (int.parse(product.price) *
+                          (int.parse(quantity
+                              .replaceAll('g', '')
+                              .replaceAll('K', '')
+                              .replaceAll('k', '')
+                              .replaceAll('L', '')
+                              .replaceAll('ml', ''))))
+                      .toString(),
               'discount': product.discount,
               "docid": product.docid
             }
           ])
         });
         Get.rawSnackbar(
+          mainButton: MaterialButton(
+            onPressed: () {
+              Navigator.pushAndRemoveUntil(Get.context,
+                  MaterialPageRoute(builder: (context) {
+                appController.selectedIndex.value = 1;
+                return NavigationPage();
+              }), (route) => false);
+            },
+            child: Text(
+              'Go to MyCarts',
+              style: TextStyle(color: Colors.yellow),
+            ),
+          ),
           title: "Item added",
           message: "${product.name} was added to your cart",
         );
@@ -85,24 +137,24 @@ class CartController extends GetxController {
           .where((item) => item.productId == product.productid)
           .isNotEmpty;
 
-  void decreaseQuantity(CartItemModel item) {
-    if (item.quantity == 1) {
-      removeCartItem(item);
-    } else {
-      removeCartItem(item);
-      item.quantity--;
-      userController.updateUserData({
-        "cart": FieldValue.arrayUnion([item.toJson()])
-      });
-    }
-  }
+  // void decreaseQuantity(CartItemModel item) {
+  //   if (item.quantity == 1) {
+  //     removeCartItem(item);
+  //   } else {
+  //     removeCartItem(item);
+  //     item.quantity--;
+  //     userController.updateUserData({
+  //       "cart": FieldValue.arrayUnion([item.toJson()])
+  //     });
+  //   }
+  // }
 
-  void increaseQuantity(CartItemModel item) {
-    removeCartItem(item);
-    item.quantity++;
-    // logger.i({"quantity": item.quantity});
-    userController.updateUserData({
-      "cart": FieldValue.arrayUnion([item.toJson()])
-    });
-  }
+  // void increaseQuantity(CartItemModel item) {
+  //   removeCartItem(item);
+  //   item.quantity++;
+  //   // logger.i({"quantity": item.quantity});
+  //   userController.updateUserData({
+  //     "cart": FieldValue.arrayUnion([item.toJson()])
+  //   });
+  // }
 }

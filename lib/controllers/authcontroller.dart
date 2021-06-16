@@ -35,19 +35,17 @@ class UserController extends GetxController {
   }
 
   _setInitialScreen(User user) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    initScreen = prefs.getInt("initScreen");
-    if (initScreen == 0 || initScreen == null) {
+    // if (initScreen.value == 0) {
+    //   Get.offAll(() => OnboardingScreen());
+    // } else {
+    if (user == null) {
       Get.offAll(() => OnboardingScreen());
     } else {
-      if (user == null) {
-        Get.offAll(() => LoginScreen());
-      } else {
-        userModel.bindStream(listenToUser());
-        Get.offAll(() => NavigationPage());
-      }
+      userModel.bindStream(listenToUser());
+      Get.offAll(() => NavigationPage());
     }
   }
+  // }
 
   // void signIn() async {
   //   try {

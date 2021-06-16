@@ -13,7 +13,7 @@ class CartItemModel {
   String id;
   String image;
   String name;
-  int quantity;
+  String quantity;
   String cost;
   String productId;
   String price;
@@ -52,7 +52,24 @@ class CartItemModel {
         IMAGE: image,
         NAME: name,
         QUANTITY: quantity,
-        COST: (int.parse(price) * quantity).toString(),
+        COST: cost,
+        // quantity.length == 3
+        //     ? (int.parse(quantity
+        //                 .replaceAll('g', '')
+        //                 .replaceAll('Kg', '')
+        //                 .replaceAll('kg', '')
+        //                 .replaceAll('L', '')
+        //                 .replaceAll('ml', '')) /
+        //             1000)
+        //         .toString()
+        //     : int.parse(
+        //         quantity
+        //             .replaceAll('g', '')
+        //             .replaceAll('Kg', '')
+        //             .replaceAll('kg', '')
+        //             .replaceAll('L', '')
+        //             .replaceAll('ml', ''),
+        //       ).toString(),
         PRICE: price,
         VARIATIONTYPE: variationtype,
         DISCOUNT: discount,

@@ -16,11 +16,9 @@ class NavigationPage extends StatefulWidget {
 }
 
 class _NavigationPageState extends State<NavigationPage> {
-  int _selectedIndex = 0;
-
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index;
+      appController.selectedIndex.value = index;
     });
   }
 
@@ -37,7 +35,7 @@ class _NavigationPageState extends State<NavigationPage> {
     return SafeArea(
       child: Scaffold(
         body: Center(
-          child: _widgetOptions.elementAt(_selectedIndex),
+          child: _widgetOptions.elementAt(appController.selectedIndex.value),
         ),
         bottomNavigationBar: Obx(
           () => CustomBottomAppBar(

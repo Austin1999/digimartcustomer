@@ -44,6 +44,11 @@ class ListSearchState extends State<ListSearch> {
                     ),
                     onPressed: () {
                       FocusScope.of(context).unfocus();
+                      Navigator.pushAndRemoveUntil(Get.context,
+                          MaterialPageRoute(builder: (context) {
+                        appController.selectedIndex.value = 0;
+                        return NavigationPage();
+                      }), (route) => false);
                       _textController.clear();
                     },
                   ),
