@@ -1,9 +1,11 @@
+import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:digimartcustomer/constants/appconstants.dart';
 import 'package:digimartcustomer/constants/controllers.dart';
 import 'package:digimartcustomer/model/productmodel.dart';
 import 'package:digimartcustomer/screens/cart/cartpage.dart';
 import 'package:digimartcustomer/screens/detail/detailscreen.dart';
+import 'package:digimartcustomer/screens/home/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -42,27 +44,30 @@ class _ProductsListpageState extends State<ProductsListpage> {
         appBar: AppBar(
           actions: [
             Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Stack(children: <Widget>[
-                IconButton(
-                    icon: Icon(Icons.shopping_cart),
-                    onPressed: () => Get.off(() => ShoppingCartWidget())),
-                new Obx(
-                  () => Positioned(
-                    // draw a red marble
-                    top: 0.0,
-                    right: 0.0,
-                    child: new CircleAvatar(
-                      radius: 6.5,
-                      backgroundColor: Colors.red,
-                      child: Text(
-                        userController.userModel.value.cart?.length.toString(),
-                        style: TextStyle(color: textwhite, fontSize: 12.0),
-                      ),
+              padding:
+                  const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 16.0),
+              child: Badge(
+                elevation: 0,
+                // padding: EdgeInsets.all(3.0),
+                shape: BadgeShape.square,
+                borderRadius: BorderRadius.circular(8),
+                badgeContent: SizedBox(
+                  height: 12,
+                  child: Obx(
+                    () => Text(
+                      userController.userModel.value.cart?.length.toString(),
+                      style: TextStyle(color: textwhite, fontSize: 10.0),
                     ),
                   ),
                 ),
-              ]),
+                child: InkWell(
+                    onTap: () => Navigator.pushAndRemoveUntil(Get.context,
+                            MaterialPageRoute(builder: (context) {
+                          appController.selectedIndex.value = 1;
+                          return NavigationPage();
+                        }), (route) => false),
+                    child: Icon(Icons.shopping_cart)),
+              ),
             ),
           ],
           centerTitle: true,
@@ -118,7 +123,9 @@ class _ProductsListpageState extends State<ProductsListpage> {
                             children: <Widget>[
                               Text(
                                 data.name,
-                                style: Theme.of(context).textTheme.title,
+                                maxLines: 2,
+                                overflow: TextOverflow.fade,
+                                style: Theme.of(context).textTheme.subtitle1,
                               ),
                               SizedBox(
                                 height: 10,

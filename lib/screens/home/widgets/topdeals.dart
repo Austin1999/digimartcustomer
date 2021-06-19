@@ -3,6 +3,7 @@ import 'package:digimartcustomer/constants/appconstants.dart';
 import 'package:digimartcustomer/constants/controllers.dart';
 import 'package:digimartcustomer/screens/detail/detailscreen.dart';
 import 'package:digimartcustomer/screens/profile/myprofile.dart';
+import 'package:digimartcustomer/screens/topdeals/topdeals.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -48,9 +49,15 @@ class TopDeals extends StatelessWidget {
                           .toList()
                           .length >
                       4
-                  ? Text(
-                      'View More',
-                      style: TextStyle(color: kprimarycolor),
+                  ?InkWell(
+                      onTap: () => Get.to(() => TopDealsPage()),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'View More',
+                          style: TextStyle(color: kprimarycolor),
+                        ),
+                      ),
                     )
                   : Container()
             ],

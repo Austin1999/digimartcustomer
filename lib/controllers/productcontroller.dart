@@ -46,19 +46,4 @@ class ProducsController extends GetxController {
           .docs
           .map((item) => ProductModel.fromMap(item.data(), item.id))
           .toList());
-  // : firebaseFirestore
-  //     .collection("products")
-  //     .where('pincode', arrayContains: pincode.value)
-  //     .snapshots()
-  //     .map((query) => query.docs
-  //         .map((item) => ProductModel.fromMap(item.data(), item.id))
-  //         .toList());
-
-  // Stream<List<ProductModel>> getCategoryProducts(value) => firebaseFirestore
-  //     .collection("products")
-  //     .where('category', isEqualTo: value)
-  //     .where('pincode', arrayContains: userController.userModel.value.pincode)
-  //     .snapshots()
-  //     .map((query) =>
-  //         query.docs.map((item) => ProductModel.fromMap(item.data())).toList());
 }

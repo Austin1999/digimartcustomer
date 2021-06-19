@@ -73,7 +73,9 @@ class CartItemWidget extends StatelessWidget {
                             height: 7.0,
                           ),
                           Text(
-                            '₹${cartItem.price} / ₹${cartItem.variationtype}',
+                            cartItem.discount != ''
+                                ? '₹${cartItem.discount} / ₹${cartItem.variationtype}'
+                                : '₹${cartItem.price} / ₹${cartItem.variationtype}',
                             style: TextStyle(
                               color: kprimarycolor,
                               fontSize: 15.0,
@@ -93,7 +95,9 @@ class CartItemWidget extends StatelessWidget {
                                       fontSize: 15.0, color: Colors.grey),
                                   children: <TextSpan>[
                                     TextSpan(
-                                        text: ' ${cartItem.cost}',
+                                        text: cartItem.discount == ''
+                                            ? ' ${cartItem.cost}'
+                                            : ' ${cartItem.cost}',
                                         style: TextStyle(
                                           fontSize: 15.0,
                                           color: kprimarycolor,

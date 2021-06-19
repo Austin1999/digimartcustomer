@@ -21,7 +21,7 @@ class CategoryGrid extends StatelessWidget {
               imageUrl: item.photourl,
               placeholder: (context, url) => Image.asset(
                 'assets/images/loading.gif',
-                fit: BoxFit.contain,
+                fit: BoxFit.cover,
               ),
             ),
             Text(

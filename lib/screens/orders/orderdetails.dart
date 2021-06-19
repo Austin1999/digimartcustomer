@@ -83,17 +83,17 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                         //     style: TextStyle(color: textgrey),
                         //   ),
                         // ),
-                        ListTile(
-                          dense: true,
-                          title: Text(
-                            'Tax',
-                            style: Theme.of(context).textTheme.bodyText2,
-                          ),
-                          trailing: Text(
-                            '${widget.orders.tax}%',
-                            style: TextStyle(color: textgrey),
-                          ),
-                        ),
+                        // ListTile(
+                        //   dense: true,
+                        //   title: Text(
+                        //     'Tax',
+                        //     style: Theme.of(context).textTheme.bodyText2,
+                        //   ),
+                        //   trailing: Text(
+                        //     '${widget.orders.tax}%',
+                        //     style: TextStyle(color: textgrey),
+                        //   ),
+                        // ),
                         ListTile(
                           dense: true,
                           title: Text(
@@ -135,15 +135,31 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                         blurRadius: 10)
                   ],
                 ),
-                child: ListTile(
-                  dense: false,
-                  title: Text(
-                    'Total',
-                    style: Theme.of(context).textTheme.headline6,
-                  ),
-                  trailing: Text(
-                    '₹${widget.orders.totalprice}',
-                    style: TextStyle(color: textgrey),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ListTile(
+                        dense: false,
+                        title: Text(
+                          'Total',
+                          style: Theme.of(context).textTheme.headline6,
+                        ),
+                        trailing: Text(
+                          '₹${widget.orders.totalprice}',
+                          style: TextStyle(color: textgrey),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          '(Inclusive of all taxes)',
+                          style: Theme.of(context).textTheme.overline,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),

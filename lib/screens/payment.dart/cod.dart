@@ -32,48 +32,23 @@ class _CODState extends State<COD> {
   double discount = userController.userModel.value.cart.fold(
     0,
     (previousValue, element) {
-      print(element.quantity
-          .replaceAll('g', '')
-          .replaceAll('K', '')
-          .replaceAll('k', '')
-          .replaceAll('L', '')
-          .replaceAll('m', '')
-          .replaceAll('l', '')
-          .length);
+      print(element.quantity.replaceAll(RegExp("[A-Za-z]"), "").trim().length);
       return element.quantity
-                  .replaceAll('K', '')
-                  .replaceAll('k', '')
-                  .replaceAll('L', '')
-                  .replaceAll('l', '')
-                  .replaceAll('m', '')
-                  .replaceAll('M', '')
-                  .replaceAll('g', '')
-                  .replaceAll('G', '')
+                  .replaceAll(RegExp("[A-Za-z]"), "")
+                  .trim()
                   .length ==
               3
           ? previousValue +
               (int.parse(element.discount) *
                   (int.parse(element.quantity
-                          .replaceAll('K', '')
-                          .replaceAll('k', '')
-                          .replaceAll('L', '')
-                          .replaceAll('l', '')
-                          .replaceAll('m', '')
-                          .replaceAll('M', '')
-                          .replaceAll('g', '')
-                          .replaceAll('G', '')) /
+                          .replaceAll(RegExp("[A-Za-z]"), "")
+                          .trim()) /
                       1000))
           : previousValue +
               (int.parse(element.discount) *
                   (int.parse(element.quantity
-                      .replaceAll('K', '')
-                      .replaceAll('k', '')
-                      .replaceAll('L', '')
-                      .replaceAll('l', '')
-                      .replaceAll('m', '')
-                      .replaceAll('M', '')
-                      .replaceAll('g', '')
-                      .replaceAll('G', ''))));
+                      .replaceAll(RegExp("[A-Za-z]"), "")
+                      .trim())));
       // : int.parse(
       //     element.quantity
       //         .replaceAll('g', '')
@@ -115,23 +90,31 @@ class _CODState extends State<COD> {
                     width: ((MediaQuery.of(context).size.width) / 2),
                     height: 50.0,
                     alignment: Alignment.center,
-                    child: RichText(
-                      text: TextSpan(
-                        text: 'Total: ',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15.0,
-                            color: Colors.black),
-                        children: <TextSpan>[
-                          TextSpan(
-                              text:
-                                  '₹${double.parse((carttotal + int.parse(orderController.ordercongig.shippingfee) + (carttotal * (int.parse(orderController.ordercongig.tax)) / 100) - (carttotal - discount)).toStringAsFixed(2))}',
-                              style: TextStyle(
-                                  fontSize: 18.0,
-                                  fontWeight: FontWeight.bold,
-                                  color: kprimarycolor)),
-                        ],
-                      ),
+                    child: Column(
+                      children: [
+                        RichText(
+                          text: TextSpan(
+                            text: 'Total: ',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15.0,
+                                color: Colors.black),
+                            children: <TextSpan>[
+                              TextSpan(
+                                  text:
+                                      '₹${double.parse((carttotal + int.parse(orderController.ordercongig.shippingfee) - (carttotal - discount)).toStringAsFixed(2))}',
+                                  style: TextStyle(
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.bold,
+                                      color: kprimarycolor)),
+                            ],
+                          ),
+                        ),
+                        Text(
+                          '(Inclusive of all taxes)',
+                          style: Theme.of(context).textTheme.overline,
+                        )
+                      ],
                     ),
                   ),
                   InkWell(
@@ -139,10 +122,10 @@ class _CODState extends State<COD> {
                       var totalPrice = double.parse((carttotal +
                               int.parse(
                                   orderController.ordercongig.shippingfee) +
-                              (carttotal *
-                                  (int.parse(orderController.ordercongig.tax)) /
-                                  100) -
-                              (carttotal - discount))
+                              // (carttotal *
+                              //     (int.parse(orderController.ordercongig.tax)) /
+                              //     100)
+                              -(carttotal - discount))
                           .toStringAsFixed(2));
 
                       showLoading();
@@ -191,37 +174,20 @@ class _CODState extends State<COD> {
                                   .doc(element.docid)
                                   .update({
                                 'quantity': element.quantity
-                                            .replaceAll('K', '')
-                                            .replaceAll('k', '')
-                                            .replaceAll('L', '')
-                                            .replaceAll('l', '')
-                                            .replaceAll('m', '')
-                                            .replaceAll('M', '')
-                                            .replaceAll('g', '')
-                                            .replaceAll('G', '')
+                                            .replaceAll(RegExp("[A-Za-z]"), "")
+                                            .trim()
                                             .length ==
                                         3
-                                    ? FieldValue.increment(-((int.parse(element
-                                            .quantity
-                                            .replaceAll('K', '')
-                                            .replaceAll('k', '')
-                                            .replaceAll('L', '')
-                                            .replaceAll('l', '')
-                                            .replaceAll('m', '')
-                                            .replaceAll('M', '')
-                                            .replaceAll('g', '')
-                                            .replaceAll('G', ''))) /
+                                    ? FieldValue.increment(-((double.parse(
+                                            element.quantity
+                                                .replaceAll(
+                                                    RegExp("[A-Za-z]"), "")
+                                                .trim())) /
                                         1000))
-                                    : FieldValue.increment(-((int.parse(element
-                                        .quantity
-                                        .replaceAll('K', '')
-                                        .replaceAll('k', '')
-                                        .replaceAll('L', '')
-                                        .replaceAll('l', '')
-                                        .replaceAll('m', '')
-                                        .replaceAll('M', '')
-                                        .replaceAll('g', '')
-                                        .replaceAll('G', ''))))),
+                                    : FieldValue.increment(-((double.parse(
+                                        element.quantity
+                                            .replaceAll(RegExp("[A-Za-z]"), "")
+                                            .trim())))),
                               });
                             });
 
@@ -310,17 +276,17 @@ class _CODState extends State<COD> {
                               )
                               .toList(),
                         ),
-                        ListTile(
-                          dense: true,
-                          title: Text(
-                            'Tax',
-                            style: Theme.of(context).textTheme.bodyText2,
-                          ),
-                          trailing: Text(
-                            '${orderController.ordercongig.tax}%',
-                            style: TextStyle(color: textgrey),
-                          ),
-                        ),
+                        // ListTile(
+                        //   dense: true,
+                        //   title: Text(
+                        //     'Tax',
+                        //     style: Theme.of(context).textTheme.bodyText2,
+                        //   ),
+                        //   trailing: Text(
+                        //     '${}%',
+                        //     style: TextStyle(color: textgrey),
+                        //   ),
+                        // ),
                         ListTile(
                           dense: true,
                           title: Text(

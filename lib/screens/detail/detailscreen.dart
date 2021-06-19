@@ -121,7 +121,7 @@ class _DetailScreenState extends State<DetailScreen> {
                                 child: Text(
                                   selected == ''
                                       ? '₹ ${widget.product.price} Per/ ${widget.product.variationtype} '
-                                      : '₹${selected.replaceAll('G', '').replaceAll('g', '').replaceAll('K', '').replaceAll('k', '').replaceAll('L', '').replaceAll('l', '').replaceAll('m', '').replaceAll('M', '').length == 3 ? (int.parse(widget.product.price) * (int.parse(selected.replaceAll('g', '').replaceAll('K', '').replaceAll('k', '').replaceAll('L', '').replaceAll('l', '').replaceAll('m', '').replaceAll('M', '')) / 1000)).toString() : (int.parse(widget.product.price) * (int.parse(selected.replaceAll('g', '').replaceAll('K', '').replaceAll('k', '').replaceAll('L', '').replaceAll('l', '').replaceAll('m', '').replaceAll('M', '')))).toString()}',
+                                      : '₹${selected.replaceAll(RegExp("[A-Za-z]"), "").trim().length == 3 ? (int.parse(widget.product.price) * (int.parse(selected.replaceAll(RegExp("[A-Za-z]"), "").trim()) / 1000)).toString() : (int.parse(widget.product.price) * (int.parse(selected.replaceAll(RegExp("[A-Za-z]"), "").trim()))).toString()}',
                                   style: TextStyle(
                                       decoration: widget.product.onsale
                                           ? TextDecoration.lineThrough
@@ -142,7 +142,7 @@ class _DetailScreenState extends State<DetailScreen> {
                                       child: Text(
                                         selected == ''
                                             ? '₹ ${widget.product.discount} Per/ ${widget.product.variationtype} '
-                                            : '₹${selected.replaceAll('G', '').replaceAll('g', '').replaceAll('K', '').replaceAll('k', '').replaceAll('L', '').replaceAll('l', '').replaceAll('m', '').replaceAll('M', '').length == 3 ? (int.parse(widget.product.discount) * (int.parse(selected.replaceAll('g', '').replaceAll('K', '').replaceAll('k', '').replaceAll('L', '').replaceAll('l', '').replaceAll('m', '').replaceAll('M', '')) / 1000)).toString() : (int.parse(widget.product.discount) * (int.parse(selected.replaceAll('g', '').replaceAll('K', '').replaceAll('k', '').replaceAll('L', '').replaceAll('l', '').replaceAll('m', '').replaceAll('M', '')))).toString()}',
+                                            : '₹${selected.replaceAll(RegExp("[A-Za-z]"), "").trim().length == 3 ? (int.parse(widget.product.discount) * (int.parse(selected.replaceAll(RegExp("[A-Za-z]"), "").trim()) / 1000)).toString() : (int.parse(widget.product.discount) * (int.parse(selected.replaceAll(RegExp("[A-Za-z]"), "").trim()))).toString()}',
                                         style: TextStyle(
                                             color: textblack,
                                             fontWeight: FontWeight.bold,
@@ -282,7 +282,7 @@ class _DetailScreenState extends State<DetailScreen> {
                           ),
                           Spacer(),
                           Text(
-                            '${orderController.ordercongig.tax}%',
+                            '${widget.product.tax}%',
                             style: TextStyle(color: textgrey),
                           ),
                         ]),
@@ -326,6 +326,10 @@ class _DetailScreenState extends State<DetailScreen> {
                                   ),
                                 ),
                                 onTap: () {
+                                  print(selected
+                                      .replaceAll(RegExp("[A-Za-z]"), "")
+                                      .trim()
+                                      .length);
                                   setState(() {
                                     selected = item;
                                   });
@@ -340,6 +344,7 @@ class _DetailScreenState extends State<DetailScreen> {
                   ),
                 ),
                 Container(
+                  width: double.infinity,
                   margin: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
                   decoration: BoxDecoration(
                     color: textwhite,
@@ -394,7 +399,7 @@ class _DetailScreenState extends State<DetailScreen> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          'Products you might Like',
+                          'Products Related to this item',
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 16),
                         ),
@@ -414,15 +419,33 @@ class _DetailScreenState extends State<DetailScreen> {
                           primary: false,
                           children: List.generate(
                             producsController.products
-                                .where((value) =>
-                                    value.productid != widget.product.productid)
-                                .toList()
-                                .length,
+                                        .where((value) =>
+                                            value.productid !=
+                                            widget.product.productid)
+                                        .where((element) =>
+                                            element.category ==
+                                            widget.product.category)
+                                        .toList()
+                                        .length >
+                                    6
+                                ? 6
+                                : producsController.products
+                                    .where((value) =>
+                                        value.productid !=
+                                        widget.product.productid)
+                                    .where((element) =>
+                                        element.category ==
+                                        widget.product.category)
+                                    .toList()
+                                    .length,
                             (index) {
                               var products = producsController.products
                                   .where((value) =>
                                       value.productid !=
                                       widget.product.productid)
+                                  .where((element) =>
+                                      element.category ==
+                                      widget.product.category)
                                   .toList();
                               var dataval = products[index];
                               // if(dataval.name != widget.product.name)

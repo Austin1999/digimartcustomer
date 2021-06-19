@@ -24,7 +24,7 @@ class ProductModel {
   List photo;
   String price;
   List pincode;
-  int quantity;
+  double quantity;
   List variation;
   bool onsale;
   String description;

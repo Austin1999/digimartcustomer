@@ -52,31 +52,20 @@ class CartController extends GetxController {
               "quantity": quantity,
               "price": product.price,
               "image": product.photo[0],
-              "cost": quantity
-                          .replaceAll('g', '')
-                          .replaceAll('K', '')
-                          .replaceAll('k', '')
-                          .replaceAll('L', '')
-                          .replaceAll('m', '')
-                          .length ==
-                      3
-                  ? (int.parse(product.price) *
-                          (int.parse(quantity
-                                  .replaceAll('g', '')
-                                  .replaceAll('K', '')
-                                  .replaceAll('k', '')
-                                  .replaceAll('L', '')
-                                  .replaceAll('m', '')) /
-                              1000))
-                      .toString()
-                  : (int.parse(product.price) *
-                          (int.parse(quantity
-                              .replaceAll('g', '')
-                              .replaceAll('K', '')
-                              .replaceAll('k', '')
-                              .replaceAll('L', '')
-                              .replaceAll('ml', ''))))
-                      .toString(),
+              "cost":
+                  quantity.replaceAll(RegExp("[A-Za-z]"), "").trim().length == 3
+                      ? (int.parse(product.price) *
+                              (int.parse(
+                                      quantity
+                                          .replaceAll(RegExp("[A-Za-z]"), "")
+                                          .trim()) /
+                                  1000))
+                          .toString()
+                      : (int.parse(product.price) *
+                              (int.parse(quantity
+                                  .replaceAll(RegExp("[A-Za-z]"), "")
+                                  .trim())))
+                          .toString(),
               'discount': product.discount,
               "docid": product.docid
             }

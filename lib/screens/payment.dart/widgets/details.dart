@@ -47,15 +47,6 @@ class ProfileDetails extends StatelessWidget {
                         ),
                         contentPadding: EdgeInsets.symmetric(
                             vertical: 10.0, horizontal: 10.0),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            Icons.clear,
-                            color: kprimarycolor,
-                          ),
-                          onPressed: () {
-                            name.clear();
-                          },
-                        ),
                       ),
                       controller: name,
                     ),
@@ -95,15 +86,6 @@ class ProfileDetails extends StatelessWidget {
                         ),
                         contentPadding: EdgeInsets.symmetric(
                             vertical: 10.0, horizontal: 10.0),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            Icons.clear,
-                            color: kprimarycolor,
-                          ),
-                          onPressed: () {
-                            phone.clear();
-                          },
-                        ),
                       ),
                       controller: phone,
                     ),
@@ -143,15 +125,6 @@ class ProfileDetails extends StatelessWidget {
                       ),
                       contentPadding: EdgeInsets.symmetric(
                           vertical: 10.0, horizontal: 10.0),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          Icons.clear,
-                          color: kprimarycolor,
-                        ),
-                        onPressed: () {
-                          address.clear();
-                        },
-                      ),
                     ),
                     controller: address,
                   ),
@@ -190,15 +163,6 @@ class ProfileDetails extends StatelessWidget {
                         ),
                         contentPadding: EdgeInsets.symmetric(
                             vertical: 10.0, horizontal: 10.0),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            Icons.clear,
-                            color: kprimarycolor,
-                          ),
-                          onPressed: () {
-                            pincode.clear();
-                          },
-                        ),
                       ),
                       controller: pincode,
                     ),
