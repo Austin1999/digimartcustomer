@@ -32,7 +32,7 @@ class ProfileDetails extends StatelessWidget {
               ),
             ),
             SizedBox(
-              width: size.width * 0.65,
+              width: size.width * 0.60,
               child: ListTile(
                 title: Padding(
                   padding: EdgeInsets.only(top: 10.0),
@@ -71,7 +71,7 @@ class ProfileDetails extends StatelessWidget {
               ),
             ),
             SizedBox(
-              width: size.width * 0.65,
+              width: size.width * 0.60,
               child: ListTile(
                 title: Padding(
                   padding: EdgeInsets.only(top: 10.0),
@@ -110,7 +110,7 @@ class ProfileDetails extends StatelessWidget {
               ),
             ),
             SizedBox(
-              width: size.width * 0.65,
+              width: size.width * 0.60,
               child: ListTile(
                 title: Padding(
                   padding: EdgeInsets.only(top: 10.0),
@@ -148,7 +148,7 @@ class ProfileDetails extends StatelessWidget {
               ),
             ),
             SizedBox(
-              width: size.width * 0.65,
+              width: size.width * 0.60,
               child: ListTile(
                 title: Padding(
                   padding: EdgeInsets.only(top: 10.0),

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:digimartcustomer/constants/controllers.dart';
 import 'package:digimartcustomer/constants/firebase.dart';
 import 'package:digimartcustomer/model/productmodel.dart';
@@ -9,18 +10,25 @@ class ProducsController extends GetxController {
   RxList<ProductModel> products = RxList<ProductModel>([]);
   // RxList<ProductModel> categorisedproducts = RxList<ProductModel>([]);
   // String collection = "products";
+  int doclimit = 7;
+  RxBool hasNext = true.obs;
+  RxBool isFetchingProducts = false.obs;
   RxString string = 'All'.obs;
   RxString pincode = userController.userModel.value.pincode.obs;
   RxList categories = RxList([]);
   RxList carousel = RxList([]);
+   RxList searchlist = RxList([]);
+  var length;
 
   @override
   onReady() {
     super.onReady();
-    products.bindStream(getAllProducts());
+    // products.bindStream(getAllProducts());
     carousel.bindStream(getCarousalLists());
     categories.bindStream(getCategoryLists());
-
+    producsController.getNextProducts(null,null);
+    searchlist.bindStream(getSearchList());
+    // getNextProducts();
     // categorisedproducts.bindStream(getCategoryProducts());
   }
 
@@ -39,11 +47,84 @@ class ProducsController extends GetxController {
       .snapshots()
       .map((query) => query.get('photourl'));
 
-  Stream<List<ProductModel>> getAllProducts() =>
-      // userController.userModel.value.pincode == ''
-      //     ?
-      firebaseFirestore.collection("products").snapshots().map((query) => query
-          .docs
-          .map((item) => ProductModel.fromMap(item.data(), item.id))
-          .toList());
+  static Future<QuerySnapshot> getProducts(limit,name,
+      {DocumentSnapshot startAfter,category}) async {
+        print(category);
+    final refproducts = firebaseFirestore.collection('products').orderBy('product_id').limit(limit);
+if(category == null){
+    if (startAfter == null) {
+      return refproducts.get();
+    } else {
+      return refproducts.startAfterDocument(startAfter).get();
+    }
+    
+  }else{
+    if (startAfter == null) {
+      return refproducts.where(name,isEqualTo:category).get();
+    } else {
+      return refproducts.where(name,isEqualTo:category).startAfterDocument(startAfter).get();
+    }
+  }
+      }
+
+  Future getNextProducts(category,name) async {
+    if (isFetchingProducts.value) return;
+    isFetchingProducts.value = true;
+    try {
+      print(products);
+      QuerySnapshot snap = await getProducts(doclimit,name,startAfter:products.isEmpty?null: products.last.doc,category: category);
+      products
+          .addAll(snap.docs.map((e) => ProductModel.fromMap(e.data(), e.id, e)).toList());
+          print(products);
+      if (snap.docs.length < doclimit) hasNext.value = false;
+    } catch (e) {
+      print(e.toString());
+    }
+    isFetchingProducts.value = false;
+  }
+  // Stream<List<ProductModel>> getAllProducts() =>
+  //     // userController.userModel.value.pincode == ''
+  //     //     ?
+  //     firebaseFirestore.collection("products").snapshots().map((query) => query
+  //         .docs
+  //         .map((item) => ProductModel.fromMap(item.data(), item.id))
+  //         .toList());
+
+
+
+
+   Stream<List> getSearchList() => firebaseFirestore
+      .collection('category')
+      .doc('search')
+      .snapshots()
+      .map((query) => query
+          .get('searchfield'));
+
+
+  static Future<QuerySnapshot> getSearchResult(limit,
+      {DocumentSnapshot startAfter,String category}) async {
+        print(category);
+    final refproducts = firebaseFirestore.collection('products').limit(limit);
+    // if (startAfter == null) {
+      return refproducts.where('name'.toUpperCase(),isGreaterThanOrEqualTo: category.toUpperCase()).get();
+    // } else {
+      // return refproducts.where('name'.toLowerCase(),isGreaterThanOrEqualTo: category.toLowerCase()).startAfterDocument(startAfter).get();
+    // }
+  }
+
+  Future getNextSearchResults(category) async {
+    if (isFetchingProducts.value) return;
+    isFetchingProducts.value = true;
+    try {
+      print(products);
+      QuerySnapshot snap = await getSearchResult(doclimit,startAfter:products.isEmpty?null: products.last.doc,category: category);
+      products
+          .addAll(snap.docs.map((e) => ProductModel.fromMap(e.data(), e.id, e)).toList());
+          print(products);
+      if (snap.docs.length < doclimit) hasNext.value = false;
+    } catch (e) {
+      print(e.toString());
+    }
+    isFetchingProducts.value = false;
+  }
 }

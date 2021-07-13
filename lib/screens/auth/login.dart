@@ -22,14 +22,20 @@ class _LoginScreenState extends State<LoginScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Image(
-                      image: AssetImage(
-                        'assets/images/logo.png',
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[900],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Image(
+                        image: AssetImage(
+                          'assets/images/logo.png',
+                        ),
+                        height: 150.0,
+                        width: 150.0,
                       ),
-                      height: 150.0,
-                      width: 150.0,
                     ),
                   ),
                   SizedBox(height: 30.0),

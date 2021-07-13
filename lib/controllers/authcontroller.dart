@@ -89,7 +89,7 @@ class UserController extends GetxController {
         verificationFailed: (FirebaseException e) {
           debugPrint(e.message);
           dismissLoadingWidget();
-          Get.snackbar('Verification failed', '',
+          Get.snackbar('Verification failed', '${e.message}',
               backgroundColor: kprimarycolor, colorText: textwhite);
         },
         codeSent: (String verificationId, int resendToken) {

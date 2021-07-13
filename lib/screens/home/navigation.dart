@@ -17,9 +17,15 @@ class NavigationPage extends StatefulWidget {
 
 class _NavigationPageState extends State<NavigationPage> {
   void _onItemTapped(int index) {
+    if(index == 2){
+       appController.selectedIndex.value = 0;
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>ListSearch(),),);
+    }
+    else{
     setState(() {
       appController.selectedIndex.value = index;
     });
+    }
   }
 
   List<Widget> _widgetOptions = <Widget>[

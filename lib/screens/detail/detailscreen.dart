@@ -21,7 +21,7 @@ class DetailScreen extends StatefulWidget {
 }
 
 class _DetailScreenState extends State<DetailScreen> {
-  String selected = '';
+  PriceItemModel selected;
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -103,12 +103,14 @@ class _DetailScreenState extends State<DetailScreen> {
                             height: size.width * 0.5,
                             width: size.width * 0.9,
                             fit: BoxFit.cover,
+                            errorWidget: (context, url, error) => Image.asset(
+                              'assets/images/loading.gif',
+                              fit: BoxFit.cover,
+                            ),
                             placeholder: (context, url) => Image.asset(
                               'assets/images/loading.gif',
                               fit: BoxFit.contain,
                             ),
-                            errorWidget: (context, url, error) =>
-                                Icon(Icons.error),
                           ),
                         ),
                       ),
@@ -119,9 +121,9 @@ class _DetailScreenState extends State<DetailScreen> {
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
-                                  selected == ''
-                                      ? '₹ ${widget.product.price} Per/ ${widget.product.variationtype} '
-                                      : '₹${selected.replaceAll(RegExp("[A-Za-z]"), "").trim().length == 3 ? (int.parse(widget.product.price) * (int.parse(selected.replaceAll(RegExp("[A-Za-z]"), "").trim()) / 1000)).toString() : (int.parse(widget.product.price) * (int.parse(selected.replaceAll(RegExp("[A-Za-z]"), "").trim()))).toString()}',
+                                  selected == null
+                                      ? '₹ ${widget.product.dummy[0].mrp} / ${widget.product.dummy[0].variation}'
+                                      : "₹ ${selected.mrp} / ${widget.product.dummy[0].variation}",
                                   style: TextStyle(
                                       decoration: widget.product.onsale
                                           ? TextDecoration.lineThrough
@@ -140,9 +142,9 @@ class _DetailScreenState extends State<DetailScreen> {
                                   ? Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: Text(
-                                        selected == ''
-                                            ? '₹ ${widget.product.discount} Per/ ${widget.product.variationtype} '
-                                            : '₹${selected.replaceAll(RegExp("[A-Za-z]"), "").trim().length == 3 ? (int.parse(widget.product.discount) * (int.parse(selected.replaceAll(RegExp("[A-Za-z]"), "").trim()) / 1000)).toString() : (int.parse(widget.product.discount) * (int.parse(selected.replaceAll(RegExp("[A-Za-z]"), "").trim()))).toString()}',
+                                        selected == null
+                                            ? '₹ ${widget.product.dummy[0].offerprice} / ${widget.product.dummy[0].variation}'
+                                            : '₹ ${selected.offerprice} / ${widget.product.dummy[0].variation}',
                                         style: TextStyle(
                                             color: textblack,
                                             fontWeight: FontWeight.bold,
@@ -166,7 +168,7 @@ class _DetailScreenState extends State<DetailScreen> {
                                                 userController
                                                     .userModel.value.pincode)
                                         ? Colors.red
-                                        : selected == ''
+                                        : selected == null
                                             ? textgrey
                                             : kprimarycolor)),
                                 foregroundColor: MaterialStateProperty.all(
@@ -175,7 +177,7 @@ class _DetailScreenState extends State<DetailScreen> {
                                                 userController
                                                     .userModel.value.pincode)
                                         ? Colors.red
-                                        : selected == ''
+                                        : selected == null
                                             ? textgrey
                                             : kprimarycolor),
                               ),
@@ -207,7 +209,7 @@ class _DetailScreenState extends State<DetailScreen> {
                                 } else {
                                   widget.product.quantity <= 1
                                       ? null
-                                      : selected == ''
+                                      : selected == null
                                           ? Get.rawSnackbar(
                                               message: 'Please Select Quantity',
                                               duration:
@@ -262,9 +264,13 @@ class _DetailScreenState extends State<DetailScreen> {
                           ),
                           Spacer(),
                           Text(
-                            orderController.ordercongig.shippingfee == '0'
-                                ? 'Free'
-                                : '₹${orderController.ordercongig.shippingfee}',
+                            selected == null
+                                ? '₹ ${orderController.ordercongig.minfee}'
+                                : double.parse(selected.offerprice) >
+                                        double.parse(
+                                            orderController.ordercongig.range)
+                                    ? '₹${orderController.ordercongig.maxfee}'
+                                    : '₹${orderController.ordercongig.minfee}',
                             style: TextStyle(color: textgrey),
                           ),
                         ]),
@@ -282,7 +288,7 @@ class _DetailScreenState extends State<DetailScreen> {
                           ),
                           Spacer(),
                           Text(
-                            '${widget.product.tax}%',
+                            'Inclusive of all taxes',
                             style: TextStyle(color: textgrey),
                           ),
                         ]),
@@ -295,9 +301,9 @@ class _DetailScreenState extends State<DetailScreen> {
                             shrinkWrap: true,
                             scrollDirection: Axis.horizontal,
                             physics: BouncingScrollPhysics(),
-                            itemCount: widget.product.variation.length,
+                            itemCount: widget.product.dummy.length,
                             itemBuilder: (context, index) {
-                              var item = widget.product.variation[index];
+                              var item = widget.product.dummy[index];
                               return InkWell(
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
@@ -316,7 +322,7 @@ class _DetailScreenState extends State<DetailScreen> {
                                     ),
                                     padding: EdgeInsets.all(8.0),
                                     child: Text(
-                                      item,
+                                      item.variation,
                                       style: TextStyle(
                                           color: selected != item
                                               ? Colors.black
@@ -326,10 +332,6 @@ class _DetailScreenState extends State<DetailScreen> {
                                   ),
                                 ),
                                 onTap: () {
-                                  print(selected
-                                      .replaceAll(RegExp("[A-Za-z]"), "")
-                                      .trim()
-                                      .length);
                                   setState(() {
                                     selected = item;
                                   });
@@ -467,6 +469,12 @@ class _DetailScreenState extends State<DetailScreen> {
                                       children: <Widget>[
                                         Expanded(
                                           child: CachedNetworkImage(
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    Image.asset(
+                                              'assets/images/loading.gif',
+                                              fit: BoxFit.cover,
+                                            ),
                                             imageUrl: dataval.photo[0],
                                             imageBuilder:
                                                 (context, imageProvider) =>
@@ -535,7 +543,7 @@ class _DetailScreenState extends State<DetailScreen> {
                                         ),
                                         SizedBox(height: 2),
                                         Text(
-                                          '${dataval.price} / ${dataval.variationtype}',
+                                          '${dataval.dummy.first.offerprice} / ${dataval.dummy.first.variation}',
                                           style: Theme.of(context)
                                               .textTheme
                                               .caption,

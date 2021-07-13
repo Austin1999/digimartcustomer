@@ -45,9 +45,15 @@ class CustomBottomAppBar extends StatefulWidget {
 class CustomBottomAppBarState extends State<CustomBottomAppBar> {
   _updateIndex(int index) {
     widget.onTabSelected(index);
+    if(index == 2){
+      appController.selectedIndex.value = 0;
+    }
+
+    else{
     setState(() {
       appController.selectedIndex.value = index;
     });
+    }
   }
 
   @override

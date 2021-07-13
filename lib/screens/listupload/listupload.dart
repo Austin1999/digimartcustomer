@@ -95,12 +95,7 @@ class _ListUploadPageState extends State<ListUploadPage> {
                     )
                   : ElevatedButton.icon(
                       onPressed: () async {
-                        var snapshot = await _firebaseStorage
-                            .ref()
-                            .child(
-                                'listuploads/${userController.firebaseUser.value.uid}${DateTime.now()}')
-                            .putFile(_image);
-                        var downloadUrl = await snapshot.ref.getDownloadURL();
+                        
 
                         showDialog(
                           context: context,
@@ -132,7 +127,15 @@ class _ListUploadPageState extends State<ListUploadPage> {
                                         ),
                                       ),
                                       FlatButton(
-                                        onPressed: () {
+                                        onPressed: () async {
+                                          showLoading();
+
+                                          var snapshot = await _firebaseStorage
+                            .ref()
+                            .child(
+                                'listuploads/${userController.firebaseUser.value.uid}${DateTime.now()}')
+                            .putFile(_image);
+                        var downloadUrl = await snapshot.ref.getDownloadURL();
                                           showLoading();
                                           try {
                                             firebaseFirestore
@@ -152,8 +155,8 @@ class _ListUploadPageState extends State<ListUploadPage> {
                                                 dismissLoadingWidget();
                                                 Get.defaultDialog(
                                                     barrierDismissible: false,
-                                                    onConfirm: () => Get.off(
-                                                        () => NavigationPage()),
+                                                    onConfirm: () { Get.offAll(
+                                                        () => NavigationPage());},
                                                     title: 'Congratulations',
                                                     middleText:
                                                         'Order Successfully Placed',

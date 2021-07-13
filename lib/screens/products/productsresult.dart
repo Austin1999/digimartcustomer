@@ -3,12 +3,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:digimartcustomer/constants/appconstants.dart';
 import 'package:digimartcustomer/constants/controllers.dart';
 import 'package:digimartcustomer/model/productmodel.dart';
-import 'package:digimartcustomer/screens/cart/cartpage.dart';
 import 'package:digimartcustomer/screens/detail/detailscreen.dart';
 import 'package:digimartcustomer/screens/home/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
 
 import '../drawer.dart';
@@ -21,21 +19,36 @@ class ProductsListpage extends StatefulWidget {
 }
 
 class _ProductsListpageState extends State<ProductsListpage> {
-  @override
+  final ScrollController scrollController = ScrollController();
+  
   @override
   void initState() {
     super.initState();
+    producsController.getNextSearchResults(widget.searchresult);
+    scrollController.addListener(scrollListener);
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
   }
+    void scrollListener() {
+    if (scrollController.offset >= scrollController.position.maxScrollExtent/2 ) {
+      if (producsController.hasNext.value) {
+        producsController.getNextSearchResults(widget.searchresult);
+      }
+    }
+  }
+
+     
 
   @override
   Widget build(BuildContext context) {
     List<ProductModel> datalist = producsController.products
-        .where((string) => string.name
+        .where((string){ 
+          print('Products Brand :  ${string.brand.toLowerCase()}');
+          print('Search Result Brand : ${widget.searchresult.toLowerCase()}');
+          return string.brand
             .toLowerCase()
-            .contains(widget.searchresult.toLowerCase()))
+            .contains(widget.searchresult.toLowerCase());})
         .toList();
     print(datalist);
     return SafeArea(
@@ -80,6 +93,7 @@ class _ProductsListpageState extends State<ProductsListpage> {
           ),
         ),
         body: ListView.builder(
+          controller: scrollController,
           itemCount: datalist.length,
           itemBuilder: (context, index) {
             var data = datalist[index];
@@ -131,7 +145,7 @@ class _ProductsListpageState extends State<ProductsListpage> {
                                 height: 10,
                               ),
                               Text(
-                                '₹${data.price}/${data.variationtype}',
+                                '₹${data.dummy.first.offerprice} / ${data.dummy.first.variation}',
                                 style: TextStyle(fontSize: 16),
                               ),
                               SizedBox(
@@ -193,6 +207,7 @@ class _ProductsListpageState extends State<ProductsListpage> {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
+    scrollController.dispose();
     super.dispose();
   }
 }

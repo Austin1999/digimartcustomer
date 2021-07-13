@@ -8,19 +8,41 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
 
-class TopDealsPage extends StatelessWidget {
-  // const TopDealsPage({
-  //   Key key,
-  //   @required this.size,
-  // }) : super(key: key);
+class TopDealsPage extends StatefulWidget {
+  @override
+  _TopDealsPageState createState() => _TopDealsPageState();
+}
 
-  // final Size size;
+class _TopDealsPageState extends State<TopDealsPage> {
+    final ScrollController scrollController = ScrollController();
+   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    scrollController.addListener(scrollListener);
+    // producsController.getNextProducts(true,'onsale');
+  }
 
+
+  void scrollListener() {
+    if (scrollController.offset >= scrollController.position.maxScrollExtent/2 ) {
+      if (producsController.hasNext.value) {
+        producsController.getNextProducts(true,'onsale');
+      }
+    }
+  }
+
+      @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
+          controller: scrollController,
           child: Container(
             margin: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
             decoration: BoxDecoration(
@@ -57,6 +79,7 @@ class TopDealsPage extends StatelessWidget {
                   () => Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: GridView.count(
+                      
                       crossAxisCount: MediaQuery.of(context).orientation ==
                               Orientation.portrait
                           ? 2
@@ -93,6 +116,10 @@ class TopDealsPage extends StatelessWidget {
                                   children: <Widget>[
                                     Expanded(
                                       child: CachedNetworkImage(
+                                        errorWidget: (context, url, error) => Image.asset(
+                                            'assets/images/loading.gif',
+                                            fit: BoxFit.contain,
+                                          ),
                                         imageUrl: dataval.photo[0],
                                         imageBuilder:
                                             (context, imageProvider) =>
@@ -158,7 +185,7 @@ class TopDealsPage extends StatelessWidget {
                                     ),
                                     SizedBox(height: 2),
                                     Text(
-                                      '${dataval.price} / ${dataval.variationtype}',
+                                      '${dataval.dummy.first.offerprice} / ${dataval.dummy.first.variation}',
                                       style:
                                           Theme.of(context).textTheme.caption,
                                       overflow: TextOverflow.ellipsis,

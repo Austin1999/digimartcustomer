@@ -1,41 +1,33 @@
 {
   "project_info": {
-    "project_number": "84239795584",
-    "project_id": "groso-da287",
-    "storage_bucket": "groso-da287.appspot.com"
+    "project_number": "797297115026",
+    "project_id": "freshwheels-969bf",
+    "storage_bucket": "freshwheels-969bf.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:84239795584:android:04c54f13e4b7fe16382d65",
+        "mobilesdk_app_id": "1:797297115026:android:7bbdc89e2ca0b6b5550b4b",
         "android_client_info": {
-          "package_name": "com.groso.digimartcustomer"
+          "package_name": "com.freshwheels.digimart"
         }
       },
       "oauth_client": [
         {
-          "client_id": "84239795584-ia1ffli139cijjcr8k40ou8qg7jlsj20.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.groso.digimartcustomer",
-            "certificate_hash": "bd7c3240df97419309fa60d884ac7915d7a0cd7b"
-          }
-        },
-        {
-          "client_id": "84239795584-7oc7d564t8er6kpbetr5bqivb19fa8h2.apps.googleusercontent.com",
+          "client_id": "797297115026-4j5kbsb8882nut25jm2r3rnd1sjoj3b2.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCzX3ITFfCRKvJxkUm1DNvu9P6VcKnn9AA"
+          "current_key": "AIzaSyB_IU6h1RO8zivXSHeYXRzNhTGEu-zwB0o"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "84239795584-7oc7d564t8er6kpbetr5bqivb19fa8h2.apps.googleusercontent.com",
+              "client_id": "797297115026-4j5kbsb8882nut25jm2r3rnd1sjoj3b2.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

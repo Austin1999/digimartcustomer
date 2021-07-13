@@ -6,6 +6,7 @@ import 'package:digimartcustomer/constants/firebase.dart';
 import 'package:digimartcustomer/model/cartitemmodel.dart';
 import 'package:digimartcustomer/model/productmodel.dart';
 import 'package:digimartcustomer/screens/home/navigation.dart';
+import 'package:digimartcustomer/screens/profile/widgets/profiledialog.dart';
 import 'package:digimartcustomer/utils/helper/showLoading.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -30,43 +31,21 @@ class _CODState extends State<COD> {
       TextEditingController(text: userController.userModel.value.pincode);
 
   double discount = userController.userModel.value.cart.fold(
-    0,
+    0.0,
     (previousValue, element) {
-      print(element.quantity.replaceAll(RegExp("[A-Za-z]"), "").trim().length);
-      return element.quantity
-                  .replaceAll(RegExp("[A-Za-z]"), "")
-                  .trim()
-                  .length ==
-              3
-          ? previousValue +
-              (int.parse(element.discount) *
-                  (int.parse(element.quantity
-                          .replaceAll(RegExp("[A-Za-z]"), "")
-                          .trim()) /
-                      1000))
-          : previousValue +
-              (int.parse(element.discount) *
-                  (int.parse(element.quantity
-                      .replaceAll(RegExp("[A-Za-z]"), "")
-                      .trim())));
-      // : int.parse(
-      //     element.quantity
-      //         .replaceAll('g', '')
-      //         .replaceAll('Kg', '')
-      //         .replaceAll('kg', '')
-      //         .replaceAll('L', '')
-      //         .replaceAll('ml', ''),
-      // )
+      return previousValue + (double.parse(element.discount) * element.number);
     },
   );
   double carttotal = userController.userModel.value.cart.fold(
     0,
-    (previousValue, element) => previousValue + double.parse(element.cost),
+    (previousValue, element) =>
+        previousValue + (double.parse(element.price) * element.number),
   );
   @override
   Widget build(BuildContext context) {
     print('Discount : $discount');
     print('Cart Total : $carttotal');
+    print(widget.product);
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -102,7 +81,7 @@ class _CODState extends State<COD> {
                             children: <TextSpan>[
                               TextSpan(
                                   text:
-                                      '₹${double.parse((carttotal + int.parse(orderController.ordercongig.shippingfee) - (carttotal - discount)).toStringAsFixed(2))}',
+                                      '₹${double.parse((discount + (carttotal > double.parse(orderController.ordercongig.range) ? double.parse(orderController.ordercongig.maxfee) : double.parse(orderController.ordercongig.minfee))).toStringAsFixed(2))}',
                                   style: TextStyle(
                                       fontSize: 18.0,
                                       fontWeight: FontWeight.bold,
@@ -116,16 +95,19 @@ class _CODState extends State<COD> {
                         )
                       ],
                     ),
-                  ),
+                  ), 
                   InkWell(
                     onTap: () {
                       var totalPrice = double.parse((carttotal +
-                              int.parse(
-                                  orderController.ordercongig.shippingfee) +
-                              // (carttotal *
-                              //     (int.parse(orderController.ordercongig.tax)) /
-                              //     100)
-                              -(carttotal - discount))
+                              (carttotal >
+                                      double.parse(
+                                          orderController.ordercongig.range)
+                                  ? double.parse(
+                                      orderController.ordercongig.maxfee)
+                                  : double.parse(
+                                        orderController.ordercongig.minfee,
+                                      ) -
+                                      (carttotal - discount)))
                           .toStringAsFixed(2));
 
                       showLoading();
@@ -144,9 +126,11 @@ class _CODState extends State<COD> {
                           'datetime': DateTime.now(),
                           'deliverystatus': 'Order Placed',
                           'totalprice': totalPrice,
-                          'shippingfee':
-                              orderController.ordercongig.shippingfee,
-                          'tax': orderController.ordercongig.tax,
+                          'shippingfee': carttotal >
+                                  double.parse(
+                                      orderController.ordercongig.range)
+                              ? orderController.ordercongig.maxfee
+                              : orderController.ordercongig.minfee,
                           'discount': (carttotal - discount)
                         }).then((v) {
                           firebaseFirestore.collection('orders').add({
@@ -161,34 +145,36 @@ class _CODState extends State<COD> {
                             "docId": v.id,
                             'userId': userController.firebaseUser.value.uid,
                             'totalprice': totalPrice,
-                            'shippingfee':
-                                orderController.ordercongig.shippingfee,
-                            'tax': orderController.ordercongig.tax,
+                            'shippingfee': carttotal >
+                                    double.parse(
+                                        orderController.ordercongig.range)
+                                ? orderController.ordercongig.maxfee
+                                : orderController.ordercongig.minfee,
                             'discount': (carttotal - discount)
                           }).whenComplete(() {
                             widget.product.forEach((element) {
                               print('Product ID : ${element.productId}');
                               cartController.removeCartItem(element);
-                              firebaseFirestore
-                                  .collection('products')
-                                  .doc(element.docid)
-                                  .update({
-                                'quantity': element.quantity
-                                            .replaceAll(RegExp("[A-Za-z]"), "")
-                                            .trim()
-                                            .length ==
-                                        3
-                                    ? FieldValue.increment(-((double.parse(
-                                            element.quantity
-                                                .replaceAll(
-                                                    RegExp("[A-Za-z]"), "")
-                                                .trim())) /
-                                        1000))
-                                    : FieldValue.increment(-((double.parse(
-                                        element.quantity
-                                            .replaceAll(RegExp("[A-Za-z]"), "")
-                                            .trim())))),
-                              });
+                              // firebaseFirestore
+                              //     .collection('products')
+                              //     .doc(element.docid)
+                              //     .update({
+                              //   'quantity': element.quantity
+                              //               .replaceAll(RegExp("[A-Za-z]"), "")
+                              //               .trim()
+                              //               .length ==
+                              //           3
+                              //       ? FieldValue.increment(-((double.parse(
+                              //               element.quantity
+                              //                   .replaceAll(
+                              //                       RegExp("[A-Za-z]"), "")
+                              //                   .trim())) /
+                              //           1000))
+                              //       : FieldValue.increment(-((double.parse(
+                              //           element.quantity
+                              //               .replaceAll(RegExp("[A-Za-z]"), "")
+                              //               .trim())))),
+                              // });
                             });
 
                             dismissLoadingWidget();
@@ -263,13 +249,21 @@ class _CODState extends State<COD> {
                               .map(
                                 (e) => ListTile(
                                   dense: true,
-                                  title: Text(
-                                    '${e.name} x ${e.quantity}',
-                                    style:
-                                        Theme.of(context).textTheme.bodyText2,
+                                  title: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '${e.name} x ${e.number}',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyText2,
+                                      ),
+                                      Text('(${e.quantity})'),
+                                    ],
                                   ),
                                   trailing: Text(
-                                    '₹${e.cost}',
+                                    '₹${int.parse(e.price) * e.number}',
                                     style: TextStyle(color: textgrey),
                                   ),
                                 ),
@@ -305,9 +299,11 @@ class _CODState extends State<COD> {
                             style: Theme.of(context).textTheme.bodyText2,
                           ),
                           trailing: Text(
-                            orderController.ordercongig.shippingfee == '0'
-                                ? 'Free'
-                                : '₹${orderController.ordercongig.shippingfee}',
+                            carttotal >
+                                    double.parse(
+                                        orderController.ordercongig.range)
+                                ? '₹${orderController.ordercongig.maxfee}'
+                                : '₹${orderController.ordercongig.minfee}',
                             style: TextStyle(color: textgrey),
                           ),
                         ),
@@ -327,25 +323,93 @@ class _CODState extends State<COD> {
                   ],
                 ),
               ),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                decoration: BoxDecoration(
-                  color: textwhite,
-                  borderRadius: BorderRadius.circular(6),
-                  boxShadow: [
-                    BoxShadow(
-                        color: Theme.of(context).hintColor.withOpacity(0.15),
-                        offset: Offset(0, 3),
-                        blurRadius: 10)
-                  ],
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 16.0),
-                  child: ProfileDetails(
-                      name: name,
-                      phone: phone,
-                      address: address,
-                      pincode: pincode),
+              Obx(
+                () => Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  decoration: BoxDecoration(
+                    color: textwhite,
+                    borderRadius: BorderRadius.circular(6),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Theme.of(context).hintColor.withOpacity(0.15),
+                          offset: Offset(0, 3),
+                          blurRadius: 10)
+                    ],
+                  ),
+                  child: ListView(
+                    shrinkWrap: true,
+                    primary: false,
+                    children: <Widget>[
+                      ListTile(
+                        leading: Icon(Icons.person),
+                        title: Text(
+                          'Profile Settings',
+                          style: Theme.of(context).textTheme.bodyText1,
+                        ),
+                        trailing: ButtonTheme(
+                          padding: EdgeInsets.all(0),
+                          minWidth: 50.0,
+                          height: 25.0,
+                          child: ProfileSettingsDialog(),
+                        ),
+                      ),
+                      ListTile(
+                        onTap: () {},
+                        dense: true,
+                        title: Text(
+                          'Full name',
+                          style: Theme.of(context).textTheme.bodyText2,
+                        ),
+                        trailing: Text(
+                          userController.userModel.value.name,
+                          style: TextStyle(color: textgrey),
+                        ),
+                      ),
+                      ListTile(
+                        onTap: () {},
+                        dense: true,
+                        title: Text(
+                          'Phone',
+                          style: Theme.of(context).textTheme.bodyText2,
+                        ),
+                        trailing: Text(
+                          userController.userModel.value.phone,
+                          style: TextStyle(color: textgrey),
+                        ),
+                      ),
+                      ListTile(
+                        onTap: () {},
+                        dense: true,
+                        title: Text(
+                          'Address',
+                          style: Theme.of(context).textTheme.bodyText2,
+                        ),
+                        trailing: SizedBox(
+                          width: 150,
+                          child: Text(
+                            userController.userModel.value.address ?? 'Unknown',
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: false,
+                            style: TextStyle(color: textgrey),
+                          ),
+                        ),
+                      ),
+                      ListTile(
+                        onTap: () {},
+                        dense: true,
+                        title: Text(
+                          'Pincode',
+                          style: Theme.of(context).textTheme.bodyText2,
+                        ),
+                        trailing: Text(
+                          userController.userModel.value.pincode,
+                          overflow: TextOverflow.ellipsis,
+                          softWrap: false,
+                          style: TextStyle(color: textgrey),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],

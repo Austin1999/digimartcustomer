@@ -11,17 +11,16 @@ class ListSearch extends StatefulWidget {
 class ListSearchState extends State<ListSearch> {
   TextEditingController _textController = TextEditingController();
   List newDataList =
-      producsController.products.map((element) => element.name).toList();
+      producsController.searchlist;
 
   @override
   Widget build(BuildContext context) {
     // List<String> newDataList = List.from(mainDataList);
-
+    print(newDataList);
+    print(producsController.searchlist);
     onItemChanged(String value) {
       setState(() {
-        newDataList = producsController.products
-            .map((element) => element.name)
-            .toList()
+        newDataList = producsController.searchlist
             .where(
                 (string) => string.toLowerCase().contains(value.toLowerCase()))
             .toList();
@@ -35,6 +34,9 @@ class ListSearchState extends State<ListSearch> {
             Padding(
               padding: const EdgeInsets.all(12.0),
               child: TextField(
+                onEditingComplete:(){
+                  Get.to(() => ProductsListpage(searchresult: _textController.text.toLowerCase()));
+                },
                 autofocus: true,
                 controller: _textController,
                 decoration: InputDecoration(
@@ -63,8 +65,10 @@ class ListSearchState extends State<ListSearch> {
                 children: newDataList.map((data) {
                   return ListTile(
                     title: Text(data),
-                    onTap: () =>
-                        Get.to(() => ProductsListpage(searchresult: data)),
+                    onTap: (){
+                      print(data);
+                      producsController.getNextSearchResults(data);
+                        Get.to(() => ProductsListpage(searchresult: data.toString().toLowerCase()));}
                   );
                 }).toList(),
               ),

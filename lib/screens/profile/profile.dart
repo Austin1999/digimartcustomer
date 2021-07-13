@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'widgets/help.dart';
+
 class ProfilePage extends StatefulWidget {
   @override
   _ProfilePageState createState() => _ProfilePageState();
@@ -87,28 +89,29 @@ class _ProfilePageState extends State<ProfilePage> {
                         child: Icon(Icons.help))),
               ),
               Divider(),
-              ListTile(
-                onTap: () => Navigator.pushAndRemoveUntil(Get.context,
-                    MaterialPageRoute(builder: (context) {
-                  appController.selectedIndex.value = 1;
-                  return NavigationPage();
-                }), (route) => false),
-                leading:
-                    Icon(Icons.shopping_cart_outlined, color: kprimarycolor),
-                title: Text('My Cart'),
-              ),
-              Divider(),
-              ListTile(
-                onTap: () async => await launch(
-                    'https://play.google.com/store/apps/details?id=com.disailor.digimartcustomer'),
-                leading: Icon(Icons.star_rate_outlined, color: kprimarycolor),
-                title: Text('Rate us'),
-              ),
-              Divider(),
-              ListTile(
-                leading: Icon(Icons.help_outline, color: kprimarycolor),
-                title: Text('Help'),
-              ),
+              // ListTile(
+              //   onTap: () => Navigator.pushAndRemoveUntil(Get.context,
+              //       MaterialPageRoute(builder: (context) {
+              //     appController.selectedIndex.value = 1;
+              //     return NavigationPage();
+              //   }), (route) => false),
+              //   leading:
+              //       Icon(Icons.shopping_cart_outlined, color: kprimarycolor),
+              //   title: Text('My Cart'),
+              // ),
+              // Divider(),
+              // ListTile(
+              //   onTap: () async => await launch(
+              //       'https://play.google.com/store/apps/details?id=com.sgm.india.tuti'),
+              //   leading: Icon(Icons.star_rate_outlined, color: kprimarycolor),
+              //   title: Text('Rate us'),
+              // ),
+              // Divider(),
+              // ListTile(
+              //   onTap: ()=>Get.to(HelpWidget()),
+              //   leading: Icon(Icons.help_outline, color: kprimarycolor),
+              //   title: Text('Help'),
+              // ),
               Divider(),
               ListTile(
                 onTap: () => userController.signOut(),

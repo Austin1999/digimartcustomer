@@ -40,7 +40,7 @@ class _ShoppingCartWidgetState extends State<ShoppingCartWidget> {
         double carttotal = userController.userModel.value.cart.fold(
             0,
             (previousValue, element) =>
-                previousValue + double.parse(element.cost));
+                previousValue + double.parse(element.cost)*element.number);
         return Material(
           elevation: 5.0,
           child: Container(

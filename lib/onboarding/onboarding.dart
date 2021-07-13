@@ -38,13 +38,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
+      
       body: AnnotatedRegion<SystemUiOverlayStyle>(
+        
         value: SystemUiOverlayStyle.light,
         child: Container(
+          
           color: _currentPage == 0 ? kprimarycolor : textwhite,
           child: Padding(
             padding: EdgeInsets.symmetric(vertical: 40.0),
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 _currentPage == _numPages - 1
@@ -67,7 +71,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         ),
                       ),
                 Container(
-                  height: 600.0,
+                  height: MediaQuery.of(context).size.height*0.80,
                   child: PageView(
                     physics: ClampingScrollPhysics(),
                     controller: _pageController,
@@ -82,7 +86,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         height: size.height,
                         child: Center(
                           child: Text(
-                            'Groso',
+                            'Fresh Wheels',
                             style: Theme.of(context)
                                 .textTheme
                                 .headline4
@@ -91,7 +95,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.all(40.0),
+                        padding: EdgeInsets.all(20.0),
                         child: SingleChildScrollView(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,7 +128,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.all(40.0),
+                        padding: EdgeInsets.all(20.0),
                         child: SingleChildScrollView(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -157,7 +161,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.all(40.0),
+                        padding: EdgeInsets.all(20.0),
                         child: SingleChildScrollView(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -198,87 +202,87 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: _buildPageIndicator(),
                       ),
-                SizedBox(
-                  height: 30,
-                ),
-                _currentPage == 0
-                    ? Expanded(
-                        child: Align(
-                          alignment: FractionalOffset.bottomCenter,
-                          child: RaisedButton(
-                            color: textwhite,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  Text(
-                                    'Next',
-                                    style: TextStyle(
-                                      color: kprimarycolor,
-                                      fontSize: 22.0,
-                                    ),
-                                  ),
-                                  SizedBox(width: 10.0),
-                                  Icon(
-                                    Icons.arrow_forward,
-                                    color: kprimarycolor,
-                                    size: 30.0,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            onPressed: () {
-                              _pageController.nextPage(
-                                duration: Duration(milliseconds: 500),
-                                curve: Curves.ease,
-                              );
-                            },
-                            shape: RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.circular(10.0),
-                            ),
-                          ),
-                        ),
-                      )
-                    : _currentPage != _numPages - 1
-                        ? Expanded(
-                            child: Align(
-                              alignment: FractionalOffset.bottomCenter,
-                              child: RaisedButton(
-                                color: kprimarycolor,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    Text(
-                                      'Next',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 22.0,
-                                      ),
-                                    ),
-                                    SizedBox(width: 10.0),
-                                    Icon(
-                                      Icons.arrow_forward,
-                                      color: Colors.white,
-                                      size: 30.0,
-                                    ),
-                                  ],
-                                ),
-                                onPressed: () {
-                                  _pageController.nextPage(
-                                    duration: Duration(milliseconds: 500),
-                                    curve: Curves.ease,
-                                  );
-                                },
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: new BorderRadius.circular(10.0),
-                                ),
-                              ),
-                            ),
-                          )
-                        : Text(''),
+        //         SizedBox(
+        //           height: 30,
+        //         ),
+        //         _currentPage == 0
+        //             ? Expanded(
+        //                 child: Align(
+        //                   alignment: FractionalOffset.bottomCenter,
+        //                   child: RaisedButton(
+        //                     color: textwhite,
+        //                     child: Padding(
+        //                       padding: const EdgeInsets.all(8.0),
+        //                       child: Row(
+        //                         mainAxisAlignment: MainAxisAlignment.center,
+        //                         mainAxisSize: MainAxisSize.min,
+        //                         children: <Widget>[
+        //                           Text(
+        //                             'Next',
+        //                             style: TextStyle(
+        //                               color: kprimarycolor,
+        //                               fontSize: 22.0,
+        //                             ),
+        //                           ),
+        //                           SizedBox(width: 10.0),
+        //                           Icon(
+        //                             Icons.arrow_forward,
+        //                             color: kprimarycolor,
+        //                             size: 30.0,
+        //                           ),
+        //                         ],
+        //                       ),
+        //                     ),
+        //                     onPressed: () {
+        //                       _pageController.nextPage(
+        //                         duration: Duration(milliseconds: 500),
+        //                         curve: Curves.ease,
+        //                       );
+        //                     },
+        //                     shape: RoundedRectangleBorder(
+        //                       borderRadius: new BorderRadius.circular(10.0),
+        //                     ),
+        //                   ),
+        //                 ),
+        //               )
+        //             : _currentPage != _numPages - 1
+        //                 ? Expanded(
+        //                     child: Align(
+        //                       alignment: FractionalOffset.bottomCenter,
+        //                       child: RaisedButton(
+        //                         color: kprimarycolor,
+        //                         child: Row(
+        //                           mainAxisAlignment: MainAxisAlignment.center,
+        //                           mainAxisSize: MainAxisSize.min,
+        //                           children: <Widget>[
+        //                             Text(
+        //                               'Next',
+        //                               style: TextStyle(
+        //                                 color: Colors.white,
+        //                                 fontSize: 22.0,
+        //                               ),
+        //                             ),
+        //                             SizedBox(width: 10.0),
+        //                             Icon(
+        //                               Icons.arrow_forward,
+        //                               color: Colors.white,
+        //                               size: 30.0,
+        //                             ),
+        //                           ],
+        //                         ),
+        //                         onPressed: () {
+        //                           _pageController.nextPage(
+        //                             duration: Duration(milliseconds: 500),
+        //                             curve: Curves.ease,
+        //                           );
+        //                         },
+        //                         shape: RoundedRectangleBorder(
+        //                           borderRadius: new BorderRadius.circular(10.0),
+        //                         ),
+        //                       ),
+        //                     ),
+        //                   )
+        //                 : Text(''),
               ],
             ),
           ),
@@ -286,7 +290,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       ),
       bottomSheet: _currentPage == _numPages - 1
           ? Container(
-              height: 50.0,
+              height: MediaQuery.of(context).size.height*0.20,
               width: double.infinity,
               color: Colors.white,
               child: GestureDetector(
@@ -308,8 +312,84 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   ),
                 ),
               ),
-            )
-          : Text(''),
+            ):_currentPage ==0?Container(
+              height: MediaQuery.of(context).size.height*0.20,
+              width: double.infinity,
+              color: kprimarycolor,
+              child: GestureDetector(
+                onTap: (){ _pageController.nextPage(
+                                    duration: Duration(milliseconds: 500),
+                                    curve: Curves.ease,
+                                  );},
+                child: Center(
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: 5.0),
+                    child: Text(
+                      'Next',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ):Container(
+              height: MediaQuery.of(context).size.height*0.20,
+              width: double.infinity,
+              color: Colors.white,
+              child: GestureDetector(
+                onTap: (){ _pageController.nextPage(
+                                    duration: Duration(milliseconds: 500),
+                                    curve: Curves.ease,
+                                  );},
+                child: Center(
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: 5.0),
+                    child: Text(
+                      'Next',
+                      style: TextStyle(
+                        color: kprimarycolor,
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          // : RaisedButton(
+          //                       color: kprimarycolor,
+          //                       child: Row(
+          //                         mainAxisAlignment: MainAxisAlignment.center,
+          //                         mainAxisSize: MainAxisSize.min,
+          //                         children: <Widget>[
+          //                           Text(
+          //                             'Next',
+          //                             style: TextStyle(
+          //                               color: Colors.white,
+          //                               fontSize: 22.0,
+          //                             ),
+          //                           ),
+          //                           SizedBox(width: 10.0),
+          //                           Icon(
+          //                             Icons.arrow_forward,
+          //                             color: Colors.white,
+          //                             size: 30.0,
+          //                           ),
+          //                         ],
+          //                       ),
+          //                       onPressed: () {
+          //                         _pageController.nextPage(
+          //                           duration: Duration(milliseconds: 500),
+          //                           curve: Curves.ease,
+          //                         );
+          //                       },
+          //                       shape: RoundedRectangleBorder(
+          //                         borderRadius: new BorderRadius.circular(10.0),
+          //                       ),
+          //                     ),
     );
   }
 }

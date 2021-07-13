@@ -59,13 +59,19 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                               .map(
                                 (e) => ListTile(
                                   dense: true,
-                                  title: Text(
-                                    '${e.pname} x ${e.quantity}',
-                                    style:
-                                        Theme.of(context).textTheme.bodyText2,
+                                  title: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '${e.pname} x ${e.number}',
+                                        style:
+                                            Theme.of(context).textTheme.bodyText2,
+                                      ),
+                                      Text('(${e.quantity})')
+                                    ],
                                   ),
                                   trailing: Text(
-                                    '₹${e.cost}',
+                                    '₹${double.parse(e.cost) * e.number}',
                                     style: TextStyle(color: textgrey),
                                   ),
                                 ),

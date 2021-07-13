@@ -22,11 +22,15 @@ class HomeAppbar extends StatelessWidget {
         child: Container(
           padding: EdgeInsets.all(9),
           decoration: BoxDecoration(
-              color: Colors.transparent,
-              border: Border.all(
-                color: Theme.of(context).focusColor.withOpacity(0.2),
-              ),
-              borderRadius: BorderRadius.circular(4)),
+            color: textwhite,
+            borderRadius: BorderRadius.circular(6),
+            boxShadow: [
+              BoxShadow(
+                  color: Theme.of(context).hintColor.withOpacity(0.15),
+                  offset: Offset(0, 3),
+                  blurRadius: 10)
+            ],
+          ),
           child: Row(
             children: <Widget>[
               Padding(

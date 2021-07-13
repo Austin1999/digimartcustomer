@@ -1,80 +1,92 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
+
 class ProductModel {
-  static const VARIATIONTYPE = "variationtype";
   static const NAME = "name";
   static const CATEGORY = "category";
   static const PHOTO = "photo_url";
-  static const PRICE = "price";
   static const QUANTITY = "quantity";
-  static const VARIATION = "variation";
   static const ONSALE = "onsale";
   static const DESCRIPTION = "description";
-  static const REVIEWS = "reviews";
   static const FEATURED = "featured";
   static const PRODUCTID = "product_id";
-  static const RATINGS = "rating";
   static const PINCODE = "pincode";
-  static const TAX = "tax";
-  static const DISCOUNT = "discount";
-  static const SHIPPINGPRICE = "shippingfee";
+  static const BRAND = 'brand';
+  static const DUMMYPRICE = 'price';
 
-  // List<Product> productList = [];
-  String variationtype;
   String name;
   String category;
   List photo;
-  String price;
+  String brand;
   List pincode;
-  double quantity;
-  List variation;
+  List<PriceItemModel> dummy;
+  var quantity;
   bool onsale;
   String description;
-  List reviews;
   bool featured;
   String productid;
-  String rating;
-  String tax;
-  String discount;
-  String shippingprice;
+  DocumentSnapshot doc;
   String docid;
-  ProductModel(
-      {this.name,
-      this.category,
-      this.description,
-      this.pincode,
-      this.featured,
-      this.onsale,
-      this.photo,
-      this.price,
-      this.productid,
-      this.quantity,
-      this.rating,
-      this.variationtype,
-      this.reviews,
-      this.variation,
-      this.discount,
-      this.shippingprice,
-      this.docid,
-      this.tax});
+  ProductModel({
+    this.name,
+    this.category,
+    this.description,
+    this.doc,
+    this.brand,
+    this.pincode,
+    this.featured,
+    this.onsale,
+    this.photo,
+    this.productid,
+    this.quantity,
+    this.dummy,
+    this.docid,
+  });
 
-  ProductModel.fromMap(Map<String, dynamic> data, documentid) {
+  ProductModel.fromMap(
+      Map<String, dynamic> data, documentid, DocumentSnapshot docval) {
     name = data[NAME];
     category = data[CATEGORY];
+    brand = data[BRAND];
+    doc = docval;
     description = data[DESCRIPTION];
     featured = data[FEATURED];
     onsale = data[ONSALE];
     photo = data[PHOTO];
-    price = data[PRICE];
     productid = data[PRODUCTID];
     quantity = data[QUANTITY];
-    rating = data[RATINGS];
-    variationtype = data[VARIATIONTYPE];
-    reviews = data[REVIEWS];
-    variation = data[VARIATION];
     pincode = data[PINCODE];
-    discount = data[DISCOUNT];
-    shippingprice = data[SHIPPINGPRICE];
     docid = documentid;
-    tax = data[TAX];
+    dummy = _convertPriceItems(data[DUMMYPRICE] ??
+        [
+          {"mrp": '85', "variation": '750G', "offerprice": '75'}
+        ]);
+  }
+
+  List<PriceItemModel> _convertPriceItems(List priceFomDb) {
+    List<PriceItemModel> _result = [];
+    if (priceFomDb.length > 0) {
+      priceFomDb.forEach((element) {
+        _result.add(PriceItemModel.fromMap(element));
+      });
+    }
+    return _result;
+  }
+}
+
+class PriceItemModel {
+  static const MRP = 'mrp';
+  static const OFFERRPRICE = 'offerprice';
+  static const VARIATION = 'variation';
+  String mrp;
+  String offerprice;
+  String variation;
+  PriceItemModel({this.mrp, this.offerprice, this.variation});
+
+  PriceItemModel.fromMap(Map<String, dynamic> data) {
+    mrp = data[MRP] ?? '0.0';
+    offerprice = data[OFFERRPRICE] ?? '0.0';
+    variation = data[VARIATION] ?? '0Kg';
   }
 }
 
