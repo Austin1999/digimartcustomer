@@ -21,7 +21,7 @@ class DetailScreen extends StatefulWidget {
 }
 
 class _DetailScreenState extends State<DetailScreen> {
-  String selected = '';
+  PriceItemModel selected;
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -118,10 +118,9 @@ class _DetailScreenState extends State<DetailScreen> {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  selected == ''
-                                      ? '₹ ${widget.product.price} Per/ ${widget.product.variationtype} '
-                                      : '₹${selected.replaceAll(RegExp("[A-Za-z]"), "").trim().length == 3 ? (int.parse(widget.product.price) * (int.parse(selected.replaceAll(RegExp("[A-Za-z]"), "").trim()) / 1000)).toString() : (int.parse(widget.product.price) * (int.parse(selected.replaceAll(RegExp("[A-Za-z]"), "").trim()))).toString()}',
+                                child: Text('',                                  // selected == ''
+                                      // ? '₹ ${widget.product.price} Per/ ${widget.product.variationtype} '
+                                      // : '₹${selected.replaceAll(RegExp("[A-Za-z]"), "").trim().length == 3 ? (int.parse(widget.product.price) * (int.parse(selected.replaceAll(RegExp("[A-Za-z]"), "").trim()) / 1000)).toString() : (int.parse(widget.product.price) * (int.parse(selected.replaceAll(RegExp("[A-Za-z]"), "").trim()))).toString()}',
                                   style: TextStyle(
                                       decoration: widget.product.onsale
                                           ? TextDecoration.lineThrough
@@ -139,10 +138,10 @@ class _DetailScreenState extends State<DetailScreen> {
                               widget.product.onsale
                                   ? Padding(
                                       padding: const EdgeInsets.all(8.0),
-                                      child: Text(
-                                        selected == ''
-                                            ? '₹ ${widget.product.discount} Per/ ${widget.product.variationtype} '
-                                            : '₹${selected.replaceAll(RegExp("[A-Za-z]"), "").trim().length == 3 ? (int.parse(widget.product.discount) * (int.parse(selected.replaceAll(RegExp("[A-Za-z]"), "").trim()) / 1000)).toString() : (int.parse(widget.product.discount) * (int.parse(selected.replaceAll(RegExp("[A-Za-z]"), "").trim()))).toString()}',
+                                      child: Text('',
+                                        // selected == ''
+                                            // ? '₹ ${widget.product.discount} Per/ ${widget.product.variationtype} '
+                                            // : '₹${selected.replaceAll(RegExp("[A-Za-z]"), "").trim().length == 3 ? (int.parse(widget.product.discount) * (int.parse(selected.replaceAll(RegExp("[A-Za-z]"), "").trim()) / 1000)).toString() : (int.parse(widget.product.discount) * (int.parse(selected.replaceAll(RegExp("[A-Za-z]"), "").trim()))).toString()}',
                                         style: TextStyle(
                                             color: textblack,
                                             fontWeight: FontWeight.bold,
@@ -207,7 +206,7 @@ class _DetailScreenState extends State<DetailScreen> {
                                 } else {
                                   widget.product.quantity <= 1
                                       ? null
-                                      : selected == ''
+                                      : selected == null
                                           ? Get.rawSnackbar(
                                               message: 'Please Select Quantity',
                                               duration:
@@ -282,7 +281,7 @@ class _DetailScreenState extends State<DetailScreen> {
                           ),
                           Spacer(),
                           Text(
-                            '${widget.product.tax}%',
+                            'Inclusive of all taxes',
                             style: TextStyle(color: textgrey),
                           ),
                         ]),
@@ -295,9 +294,9 @@ class _DetailScreenState extends State<DetailScreen> {
                             shrinkWrap: true,
                             scrollDirection: Axis.horizontal,
                             physics: BouncingScrollPhysics(),
-                            itemCount: widget.product.variation.length,
+                            itemCount: widget.product.dummy.length,
                             itemBuilder: (context, index) {
-                              var item = widget.product.variation[index];
+                              var item = widget.product.dummy[index];
                               return InkWell(
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
@@ -316,7 +315,7 @@ class _DetailScreenState extends State<DetailScreen> {
                                     ),
                                     padding: EdgeInsets.all(8.0),
                                     child: Text(
-                                      item,
+                                      item.variation,
                                       style: TextStyle(
                                           color: selected != item
                                               ? Colors.black
@@ -326,10 +325,7 @@ class _DetailScreenState extends State<DetailScreen> {
                                   ),
                                 ),
                                 onTap: () {
-                                  print(selected
-                                      .replaceAll(RegExp("[A-Za-z]"), "")
-                                      .trim()
-                                      .length);
+                                 
                                   setState(() {
                                     selected = item;
                                   });
@@ -535,7 +531,7 @@ class _DetailScreenState extends State<DetailScreen> {
                                         ),
                                         SizedBox(height: 2),
                                         Text(
-                                          '${dataval.price} / ${dataval.variationtype}',
+                                          '${dataval.dummy.first.offerprice} / ${dataval.dummy.first.variation}',
                                           style: Theme.of(context)
                                               .textTheme
                                               .caption,

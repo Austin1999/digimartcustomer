@@ -108,13 +108,13 @@ class _OrderPageState extends State<OrderPage> {
                                               .replaceAll(')', ''),
                                           overflow: TextOverflow.ellipsis,
                                           style:
-                                              Theme.of(context).textTheme.title,
+                                              Theme.of(context).textTheme.subtitle1,
                                         ),
                                         SizedBox(
                                           height: 10,
                                         ),
                                         Text(
-                                          '₹${data.item[0].price}/${data.item[0].variationtype}',
+                                          '₹${data.item[0].price}/${data.item[0].cost}',
                                           style: TextStyle(fontSize: 16),
                                         ),
                                         SizedBox(

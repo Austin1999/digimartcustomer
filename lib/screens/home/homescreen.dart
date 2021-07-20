@@ -7,8 +7,10 @@ import 'package:digimartcustomer/screens/home/widgets/freatured.dart';
 import 'package:digimartcustomer/screens/home/widgets/topdeals.dart';
 import 'package:digimartcustomer/screens/notificaiton/notification.dart';
 import 'package:digimartcustomer/screens/profile/myprofile.dart';
+import 'package:digimartcustomer/screens/splash/splashscreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 
 import 'widgets/toppicks.dart';
@@ -286,27 +288,26 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
           centerTitle: false,
         ),
-        body: SingleChildScrollView(
+        body:  Obx(()=>producsController.products.isEmpty?Center(child: SpinKitCubeGrid(color: kprimarycolor,)):
+                      SingleChildScrollView(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: HomeAppbar(size: size),
-              ),
-              Carousel(),
-              CategoryGrid(),
-              Column(
-                children: [
-                  Featured(size: size),
-                  TopDeals(size: size),
-                  TopPicks(),
-                ],
-              ),
-            ],
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0), 
+                  child: HomeAppbar(size: size),
+                ),
+                
+                CategoryGrid(),
+                Carousel(),
+                TopDeals(size: size),
+                Featured(size: size),
+                // TopPicks()
+              ],
+            ),
           ),
         ),
-      ),
-    );
+    
+     ), );
   }
 }

@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<html>
 <head>
   <!--
     If you are serving your web app in a path other than the root, change the
@@ -15,18 +14,19 @@
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+  <meta name="description" content="Order Online and get your Groceries delivered at your doorstep">
 
   <!-- iOS meta tags & icons -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="digimartcustomer">
-  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+  <meta name="apple-mobile-web-app-title" content="Groso">
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png"/>
+  <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png"/>
 
-  <title>digimartcustomer</title>
+  <title>Groso Customer</title>
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
@@ -40,6 +40,32 @@
       });
     }
   </script>
+  <!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/7.22.1/firebase-app.js"></script>
+
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+<script src="https://www.gstatic.com/firebasejs/7.22.1/firebase-analytics.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.22.1/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.22.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.22.1/firebase-storage.js"></script>
+
+<script>
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  var firebaseConfig = {
+    apiKey: "AIzaSyBYVinIRTaaIG2dL2Kn6Vv82VVRABwEhv8",
+    authDomain: "groso-da287.firebaseapp.com",
+    projectId: "groso-da287",
+    storageBucket: "groso-da287.appspot.com",
+    messagingSenderId: "84239795584",
+    appId: "1:84239795584:web:6426809f939e4dbb382d65",
+    measurementId: "G-5GMXSX7HP9"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  firebase.analytics();
+</script>
   <script src="main.dart.js" type="application/javascript"></script>
 </body>
 </html>

@@ -6,9 +6,9 @@ class CartItemModel {
   static const COST = "cost";
   static const PRICE = "price";
   static const PRODUCT_ID = "productId";
-  static const VARIATIONTYPE = "variationtype";
   static const DISCOUNT = "discount";
   static const DOCID = 'docid';
+  static const NUMBER = 'number';
 
   String id;
   String image;
@@ -17,8 +17,8 @@ class CartItemModel {
   String cost;
   String productId;
   String price;
-  String variationtype;
   String docid;
+  int number;
   String discount;
 
   CartItemModel(
@@ -28,8 +28,8 @@ class CartItemModel {
       this.name,
       this.price,
       this.quantity,
+      this.number,
       this.discount,
-      this.variationtype,
       this.docid,
       this.cost});
 
@@ -41,9 +41,9 @@ class CartItemModel {
     cost = data[COST];
     productId = data[PRODUCT_ID];
     price = data[PRICE];
-    variationtype = data[VARIATIONTYPE];
     docid = data[DOCID];
     discount = data[DISCOUNT];
+    number = data[NUMBER];
   }
 
   Map<String, dynamic> toJson() => {
@@ -53,27 +53,10 @@ class CartItemModel {
         NAME: name,
         QUANTITY: quantity,
         COST: cost,
-        // quantity.length == 3
-        //     ? (int.parse(quantity
-        //                 .replaceAll('g', '')
-        //                 .replaceAll('Kg', '')
-        //                 .replaceAll('kg', '')
-        //                 .replaceAll('L', '')
-        //                 .replaceAll('ml', '')) /
-        //             1000)
-        //         .toString()
-        //     : int.parse(
-        //         quantity
-        //             .replaceAll('g', '')
-        //             .replaceAll('Kg', '')
-        //             .replaceAll('kg', '')
-        //             .replaceAll('L', '')
-        //             .replaceAll('ml', ''),
-        //       ).toString(),
         PRICE: price,
-        VARIATIONTYPE: variationtype,
         DISCOUNT: discount,
         DOCID: docid,
+        NUMBER: number,
       };
 }
 

@@ -20,7 +20,7 @@ class CartController extends GetxController {
     ever(userController.userModel, changeCartTotalPrice);
   }
 
-  void addProductToCart(ProductModel product, String quantity) {
+  void addProductToCart(ProductModel product, PriceItemModel quantity) {
     try {
       if (_isItemAlreadyAdded(product)) {
         Get.rawSnackbar(
@@ -45,28 +45,28 @@ class CartController extends GetxController {
         userController.updateUserData({
           "cart": FieldValue.arrayUnion([
             {
-              'variationtype': product.variationtype,
               "id": itemId,
+              "number":1,
               "productId": product.productid,
               "name": product.name,
-              "quantity": quantity,
-              "price": product.price,
+              "quantity": quantity.variation,
+              "price": quantity.mrp,
               "image": product.photo[0],
-              "cost":
-                  quantity.replaceAll(RegExp("[A-Za-z]"), "").trim().length == 3
-                      ? (int.parse(product.price) *
-                              (int.parse(
-                                      quantity
-                                          .replaceAll(RegExp("[A-Za-z]"), "")
-                                          .trim()) /
-                                  1000))
-                          .toString()
-                      : (int.parse(product.price) *
-                              (int.parse(quantity
-                                  .replaceAll(RegExp("[A-Za-z]"), "")
-                                  .trim())))
-                          .toString(),
-              'discount': product.discount,
+              "cost":quantity.offerprice,
+                  // quantity.replaceAll(RegExp("[A-Za-z]"), "").trim().length == 3
+                  //     ? (int.parse(product.price) *
+                  //             (int.parse(
+                  //                     quantity
+                  //                         .replaceAll(RegExp("[A-Za-z]"), "")
+                  //                         .trim()) /
+                  //                 1000))
+                  //         .toString()
+                  //     : (int.parse(product.price) *
+                  //             (int.parse(quantity
+                  //                 .replaceAll(RegExp("[A-Za-z]"), "")
+                  //                 .trim())))
+                  //         .toString(),
+              'discount': quantity.offerprice,
               "docid": product.docid
             }
           ])
@@ -126,24 +126,24 @@ class CartController extends GetxController {
           .where((item) => item.productId == product.productid)
           .isNotEmpty;
 
-  // void decreaseQuantity(CartItemModel item) {
-  //   if (item.quantity == 1) {
-  //     removeCartItem(item);
-  //   } else {
-  //     removeCartItem(item);
-  //     item.quantity--;
-  //     userController.updateUserData({
-  //       "cart": FieldValue.arrayUnion([item.toJson()])
-  //     });
-  //   }
-  // }
+  void decreaseQuantity(CartItemModel item) {
+    if (item.quantity == 1) {
+      removeCartItem(item);
+    } else {
+      removeCartItem(item);
+      item.number--;
+      userController.updateUserData({
+        "cart": FieldValue.arrayUnion([item.toJson()])
+      });
+    }
+  }
 
-  // void increaseQuantity(CartItemModel item) {
-  //   removeCartItem(item);
-  //   item.quantity++;
-  //   // logger.i({"quantity": item.quantity});
-  //   userController.updateUserData({
-  //     "cart": FieldValue.arrayUnion([item.toJson()])
-  //   });
-  // }
+  void increaseQuantity(CartItemModel item) {
+    removeCartItem(item);
+    item.number++;
+    // logger.i({"quantity": item.quantity});
+    userController.updateUserData({
+      "cart": FieldValue.arrayUnion([item.toJson()])
+    });
+  }
 }

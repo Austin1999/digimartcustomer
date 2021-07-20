@@ -38,13 +38,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
+      
       body: AnnotatedRegion<SystemUiOverlayStyle>(
+        
         value: SystemUiOverlayStyle.light,
         child: Container(
+          
           color: _currentPage == 0 ? kprimarycolor : textwhite,
           child: Padding(
             padding: EdgeInsets.symmetric(vertical: 40.0),
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 _currentPage == _numPages - 1
@@ -67,7 +71,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         ),
                       ),
                 Container(
-                  height: 600.0,
+                  height: MediaQuery.of(context).size.height*0.75,
                   child: PageView(
                     physics: ClampingScrollPhysics(),
                     controller: _pageController,

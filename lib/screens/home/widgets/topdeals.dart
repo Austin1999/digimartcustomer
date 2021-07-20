@@ -19,18 +19,8 @@ class TopDeals extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-      decoration: BoxDecoration(
-        color: textwhite,
-        borderRadius: BorderRadius.circular(6),
-        boxShadow: [
-          BoxShadow(
-              color: Theme.of(context).hintColor.withOpacity(0.15),
-              offset: Offset(0, 3),
-              blurRadius: 10)
-        ],
-      ),
+    return Padding(
+      padding: const EdgeInsets.only(left:8.0,right: 8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -48,8 +38,8 @@ class TopDeals extends StatelessWidget {
                           .where((string) => string.onsale == true)
                           .toList()
                           .length >
-                      4
-                  ?InkWell(
+                      6
+                  ? InkWell(
                       onTap: () => Get.to(() => TopDealsPage()),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -70,7 +60,8 @@ class TopDeals extends StatelessWidget {
                   fontWeight: FontWeight.w300, fontSize: 14, color: textgrey),
             ),
           ),
-          producsController.products
+          Obx(
+                () =>producsController.products
                       .where((string) => string.onsale == true)
                       .toList()
                       .length ==
@@ -84,8 +75,7 @@ class TopDeals extends StatelessWidget {
                     ),
                   ),
                 )
-              : Obx(
-                  () => Padding(
+              : Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: GridView.count(
                       crossAxisCount: MediaQuery.of(context).orientation ==
@@ -103,8 +93,8 @@ class TopDeals extends StatelessWidget {
                                     .where((string) => string.onsale == true)
                                     .toList()
                                     .length >
-                                4
-                            ? 4
+                                6
+                            ? 6
                             : producsController.products
                                 .where((string) => string.onsale == true)
                                 .toList()
@@ -113,150 +103,180 @@ class TopDeals extends StatelessWidget {
                           var dataval = producsController.products
                               .where((string) => string.onsale == true)
                               .toList()[index];
-                          return InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          DetailScreen(product: dataval)));
-                              // Get.to(() => DetailScreen(product: dataval));
-                            },
-                            child: Stack(
-                              alignment: AlignmentDirectional.topEnd,
-                              children: <Widget>[
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Expanded(
-                                      child: CachedNetworkImage(
-                                        imageUrl: dataval.photo[0],
-                                        imageBuilder:
-                                            (context, imageProvider) =>
-                                                Container(
-                                          decoration: BoxDecoration(
-                                            image: DecorationImage(
-                                                image: imageProvider,
-                                                fit: BoxFit.cover),
-                                            borderRadius:
-                                                BorderRadius.circular(5),
+                          return Container(
+                            // margin: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                            decoration: BoxDecoration(
+                              color: textwhite,
+                              borderRadius: BorderRadius.circular(6),
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Theme.of(context)
+                                        .hintColor
+                                        .withOpacity(0.15),
+                                    offset: Offset(0, 3),
+                                    blurRadius: 10)
+                              ],
+                            ),
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            DetailScreen(product: dataval)));
+                                // Get.to(() => DetailScreen(product: dataval));
+                              },
+                              child: Stack(
+                                alignment: AlignmentDirectional.topEnd,
+                                children: <Widget>[
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Expanded(
+                                        child: CachedNetworkImage(
+                                          imageUrl: dataval.photo[0],
+                                          imageBuilder:
+                                              (context, imageProvider) =>
+                                                  Container(
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                  image: imageProvider,
+                                                  fit: BoxFit.cover),
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                            ),
+                                          ),
+                                          placeholder: (context, url) =>
+                                              Image.asset(
+                                            'assets/images/loading.gif',
+                                            fit: BoxFit.contain,
                                           ),
                                         ),
-                                        placeholder: (context, url) =>
-                                            Image.asset(
-                                          'assets/images/loading.gif',
-                                          fit: BoxFit.contain,
+                                      ),
+                                      dataval.quantity == 0
+                                          ? Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text(
+                                                'Out of Stock',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .subtitle2
+                                                    .copyWith(color: Colors.red),
+                                              ),
+                                          )
+                                          : !dataval.pincode.contains(
+                                                  userController
+                                                      .userModel.value.pincode)
+                                              ? Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Text(
+                                                    'Not Deliverable',
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .subtitle2
+                                                        .copyWith(
+                                                            color: Colors.red),
+                                                  ),
+                                              )
+                                              : Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Text(
+                                                    'Deliverable',
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .subtitle2
+                                                        .copyWith(
+                                                            color: Colors.green),
+                                                  ),
+                                              ),
+                                      // RatingBarIndicator(
+                                      //   rating: double.parse(dataval.rating),
+                                      //   itemBuilder: (context, index) => Icon(
+                                      //     Icons.star,
+                                      //     color: Colors.amber,
+                                      //   ),
+                                      //   itemCount: 5,
+                                      //   itemSize: 22.0,
+                                      //   direction: Axis.horizontal,
+                                      // ),
+                                      SizedBox(height: 5),
+                                      Padding(
+                                        padding: const EdgeInsets.only(top:2.0, bottom: 2.0, left: 6.0),
+                                        child: Text(
+                                          dataval.name,
+                                          style:
+                                              Theme.of(context).textTheme.bodyText1,
+                                          overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
-                                    ),
-                                    dataval.quantity == 0
-                                        ? Text(
-                                            'Out of Stock',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .subtitle2
-                                                .copyWith(color: Colors.red),
-                                          )
-                                        : !dataval.pincode.contains(
-                                                userController
-                                                    .userModel.value.pincode)
-                                            ? Text(
-                                                'Not Deliverable',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .subtitle2
-                                                    .copyWith(
-                                                        color: Colors.red),
-                                              )
-                                            : Text(
-                                                'Deliverable',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .subtitle2
-                                                    .copyWith(
-                                                        color: Colors.green),
-                                              ),
-                                    // RatingBarIndicator(
-                                    //   rating: double.parse(dataval.rating),
-                                    //   itemBuilder: (context, index) => Icon(
-                                    //     Icons.star,
-                                    //     color: Colors.amber,
-                                    //   ),
-                                    //   itemCount: 5,
-                                    //   itemSize: 22.0,
-                                    //   direction: Axis.horizontal,
-                                    // ),
-                                    SizedBox(height: 5),
-                                    Text(
-                                      dataval.name,
-                                      style:
-                                          Theme.of(context).textTheme.bodyText1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    SizedBox(height: 2),
-                                    Text(
-                                      '${dataval.price} / ${dataval.variationtype}',
-                                      style:
-                                          Theme.of(context).textTheme.caption,
-                                      overflow: TextOverflow.ellipsis,
-                                    )
-                                  ],
-                                ),
-                                // Container(
-                                //   margin: EdgeInsets.all(10),
-                                //   width: 40,
-                                //   height: 40,
-                                //   child: FlatButton(
-                                //     padding: EdgeInsets.all(0),
-                                //     onPressed: () {
-                                //       if (userController
-                                //           .userModel.value.address.isEmpty) {
-                                //         showDialog(
-                                //           context: context,
-                                //           builder: (context) {
-                                //             return AlertDialog(
-                                //               title: Text('Complete your profile'),
-                                //               content: Text(
-                                //                   'Please add your address and pincode to your profile section'),
-                                //               actions: [
-                                //                 RaisedButton(
-                                //                     color: kprimarycolor,
-                                //                     child: Text(
-                                //                       'Go to my Profile',
-                                //                       style:
-                                //                           TextStyle(color: textwhite),
-                                //                     ),
-                                //                     onPressed: () {
-                                //                       Get.to(() => MyProfile());
-                                //                     })
-                                //               ],
-                                //             );
-                                //           },
-                                //         );
-                                //       } else {
-                                //         dataval.quantity == 0
-                                //             ? Get.rawSnackbar(
-                                //                 message: 'Product Out Of Stock')
-                                //             : !dataval.pincode.contains(userController
-                                //                     .userModel.value.pincode)
-                                //                 ? Get.rawSnackbar(
-                                //                     message: 'Not Deliverable')
-                                //                 : cartController
-                                //                     .addProductToCart(dataval);
-                                //       }
-                                //     },
-                                //     child: Icon(
-                                //       Icons.add_shopping_cart,
-                                //       color: textwhite,
-                                //       size: 24,
-                                //     ),
-                                //     color: dataval.quantity == 0
-                                //         ? Colors.red
-                                //         : kprimarycolor,
-                                //     shape: StadiumBorder(),
-                                //   ),
-                                // ),
-                              ],
+                                      SizedBox(height: 2),
+                                      Padding(
+                                        padding: const EdgeInsets.only(top:2.0, bottom: 8.0, left: 6.0),
+                                        child: Text(
+                                          '${dataval.dummy.first.offerprice} / ${dataval.dummy.first.variation}',
+                                          style:
+                                              Theme.of(context).textTheme.caption,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  // Container(
+                                  //   margin: EdgeInsets.all(10),
+                                  //   width: 40,
+                                  //   height: 40,
+                                  //   child: FlatButton(
+                                  //     padding: EdgeInsets.all(0),
+                                  //     onPressed: () {
+                                  //       if (userController
+                                  //           .userModel.value.address.isEmpty) {
+                                  //         showDialog(
+                                  //           context: context,
+                                  //           builder: (context) {
+                                  //             return AlertDialog(
+                                  //               title: Text('Complete your profile'),
+                                  //               content: Text(
+                                  //                   'Please add your address and pincode to your profile section'),
+                                  //               actions: [
+                                  //                 RaisedButton(
+                                  //                     color: kprimarycolor,
+                                  //                     child: Text(
+                                  //                       'Go to my Profile',
+                                  //                       style:
+                                  //                           TextStyle(color: textwhite),
+                                  //                     ),
+                                  //                     onPressed: () {
+                                  //                       Get.to(() => MyProfile());
+                                  //                     })
+                                  //               ],
+                                  //             );
+                                  //           },
+                                  //         );
+                                  //       } else {
+                                  //         dataval.quantity == 0
+                                  //             ? Get.rawSnackbar(
+                                  //                 message: 'Product Out Of Stock')
+                                  //             : !dataval.pincode.contains(userController
+                                  //                     .userModel.value.pincode)
+                                  //                 ? Get.rawSnackbar(
+                                  //                     message: 'Not Deliverable')
+                                  //                 : cartController
+                                  //                     .addProductToCart(dataval);
+                                  //       }
+                                  //     },
+                                  //     child: Icon(
+                                  //       Icons.add_shopping_cart,
+                                  //       color: textwhite,
+                                  //       size: 24,
+                                  //     ),
+                                  //     color: dataval.quantity == 0
+                                  //         ? Colors.red
+                                  //         : kprimarycolor,
+                                  //     shape: StadiumBorder(),
+                                  //   ),
+                                  // ),
+                                ],
+                              ),
                             ),
                           );
                         },

@@ -15,19 +15,25 @@ class CategoryGrid extends StatelessWidget {
       final item = category;
       return InkWell(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             CachedNetworkImage(
               imageUrl: item.photourl,
+              height: 50,
+              width: double.infinity,
+              fit: BoxFit.cover,
               placeholder: (context, url) => Image.asset(
                 'assets/images/loading.gif',
                 fit: BoxFit.cover,
               ),
             ),
-            Text(
-              item.title,
-              overflow: TextOverflow.fade,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13.5),
+            Padding(
+              padding: const EdgeInsets.only(left:8.0,right: 8.0,top: 8.0),
+              child: Text(
+                item.title,
+                overflow: TextOverflow.fade,
+                style: TextStyle( fontSize: 8.5,fontWeight: FontWeight.bold),
+              ),
             )
           ],
         ),
@@ -37,59 +43,64 @@ class CategoryGrid extends StatelessWidget {
       );
     }
 
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-      decoration: BoxDecoration(
-        color: textwhite,
-        borderRadius: BorderRadius.circular(6),
-        boxShadow: [
-          BoxShadow(
-              color: Theme.of(context).hintColor.withOpacity(0.15),
-              offset: Offset(0, 3),
-              blurRadius: 10)
-        ],
-      ),
-      child: ListView(
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-        children: [
-          ListTile(
-            title: Text(
-              'Categories',
-              style: Theme.of(context).textTheme.headline6,
-            ),
+    return ListView(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      children: [
+        ListTile(
+          title: Text(
+            'What are you looking For?',
+            style: Theme.of(context).textTheme.subtitle1,
           ),
-          producsController.categories.isEmpty
-              ? Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Center(
-                    child: Text(
-                      'No Categories Available',
-                      style: Theme.of(context).textTheme.subtitle1,
-                    ),
+        ),
+        Obx(
+                () =>producsController.categories.isEmpty
+            ? Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(
+                  child: Text(
+                    'No Categories Available',
+                    style: Theme.of(context).textTheme.subtitle1,
                   ),
-                )
-              : Obx(
-                  () => GridView.count(
+                ),
+              )
+            :  Padding(
+                  padding: const EdgeInsets.only(left:8.0,right: 8.0),
+                  child: GridView.count(
                     primary: false,
                     shrinkWrap: true,
                     padding: const EdgeInsets.all(0),
                     crossAxisSpacing: 0,
-                    mainAxisSpacing: 10,
-                    crossAxisCount: 4,
-                    childAspectRatio: ((width) / 500),
+                    mainAxisSpacing: 0,
+                    crossAxisCount:  MediaQuery.of(context).orientation ==
+                              Orientation.portrait
+                          ? 4
+                          : 6,
+                    childAspectRatio: 0.93,
                     children: List.generate(producsController.categories.length,
                         (index) {
-                      return Padding(
-                        padding: const EdgeInsets.only(left: 18.0),
+                      return Container(
+                        margin:
+                            EdgeInsets.only(bottom: 10, left: 10),
+                        decoration: BoxDecoration(
+                          color: textwhite,
+                          borderRadius: BorderRadius.circular(6),
+                          boxShadow: [
+                            BoxShadow(
+                                color:
+                                    Theme.of(context).hintColor.withOpacity(0.15),
+                                offset: Offset(0, 3),
+                                blurRadius: 10)
+                          ],
+                        ),
                         child: getStructuredGridCell(
                             producsController.categories[index]),
                       );
                     }),
                   ),
                 ),
-        ],
-      ),
+              ),
+      ],
     );
   }
 }

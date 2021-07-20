@@ -131,7 +131,7 @@ class _ProductsListpageState extends State<ProductsListpage> {
                                 height: 10,
                               ),
                               Text(
-                                '₹${data.price}/${data.variationtype}',
+                                '₹${data.dummy.first.offerprice} / ${data.dummy.first.variation}',
                                 style: TextStyle(fontSize: 16),
                               ),
                               SizedBox(

@@ -54,23 +54,17 @@ class TopPicks extends StatelessWidget {
                     ),
                   ),
                 )
-              : Obx(
-                  () => Padding(
+              : Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: GridView.count(
-                      crossAxisCount: MediaQuery.of(context).orientation ==
-                              Orientation.portrait
-                          ? 2
-                          : 4,
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 20,
-                      shrinkWrap: true,
-                      physics: BouncingScrollPhysics(),
-                      scrollDirection: Axis.vertical,
-                      primary: false,
-                      children: List.generate(
-                        8,
-                        (index) {
+                    child: SizedBox(
+                      height: 400,
+                      child: ListView.builder(
+                        itemCount: 6,
+                        shrinkWrap: true,
+                        physics: BouncingScrollPhysics(),
+                        scrollDirection: Axis.vertical,
+                        primary: false,
+                        itemBuilder: (context, index) {
                           var dataval = producsController.products[Random()
                               .nextInt(producsController.products.length)];
                           return InkWell(
@@ -82,85 +76,75 @@ class TopPicks extends StatelessWidget {
                                           DetailScreen(product: dataval)));
                               // Get.to(() => DetailScreen(product: dataval));
                             },
-                            child: Stack(
-                              alignment: AlignmentDirectional.topEnd,
-                              children: <Widget>[
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Expanded(
-                                      child: CachedNetworkImage(
-                                        imageUrl: dataval.photo[0],
-                                        imageBuilder:
-                                            (context, imageProvider) =>
-                                                Container(
-                                          decoration: BoxDecoration(
-                                            image: DecorationImage(
-                                                image: imageProvider,
-                                                fit: BoxFit.cover),
-                                            borderRadius:
-                                                BorderRadius.circular(5),
-                                          ),
-                                        ),
-                                        placeholder: (context, url) =>
-                                            Image.asset(
-                                          'assets/images/loading.gif',
-                                          fit: BoxFit.contain,
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Expanded(
+                                    child: CachedNetworkImage(
+                                      imageUrl: dataval.photo[0],
+                                      imageBuilder: (context, imageProvider) =>
+                                          Container(
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                              image: imageProvider,
+                                              fit: BoxFit.cover),
+                                          borderRadius:
+                                              BorderRadius.circular(5),
                                         ),
                                       ),
+                                      placeholder: (context, url) =>
+                                          Image.asset(
+                                        'assets/images/loading.gif',
+                                        fit: BoxFit.contain,
+                                      ),
                                     ),
-                                    dataval.quantity == 0
-                                        ? Text(
-                                            'Out of Stock',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .subtitle2
-                                                .copyWith(color: Colors.red),
-                                          )
-                                        : !dataval.pincode.contains(
-                                                userController
-                                                    .userModel.value.pincode)
-                                            ? Text(
-                                                'Not Deliverable',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .subtitle2
-                                                    .copyWith(
-                                                        color: Colors.red),
-                                              )
-                                            : Text(
-                                                'Deliverable',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .subtitle2
-                                                    .copyWith(
-                                                        color: Colors.green),
-                                              ),
-                                    SizedBox(height: 5),
-                                    Text(
-                                      dataval.name,
-                                      style:
-                                          Theme.of(context).textTheme.bodyText1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    SizedBox(height: 2),
-                                    Text(
-                                      '${dataval.price} / ${dataval.variationtype}',
-                                      style:
-                                          Theme.of(context).textTheme.caption,
-                                      overflow: TextOverflow.ellipsis,
-                                    )
-                                  ],
-                                ),
-                              ],
-                            ),
+                                  ),
+                                  dataval.quantity == 0
+                                      ? Text(
+                                          'Out of Stock',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .subtitle2
+                                              .copyWith(color: Colors.red),
+                                        )
+                                      : !dataval.pincode.contains(userController
+                                              .userModel.value.pincode)
+                                          ? Text(
+                                              'Not Deliverable',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .subtitle2
+                                                  .copyWith(color: Colors.red),
+                                            )
+                                          : Text(
+                                              'Deliverable',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .subtitle2
+                                                  .copyWith(
+                                                      color: Colors.green),
+                                            ),
+                                  SizedBox(height: 5),
+                                  Text(
+                                    dataval.name,
+                                    style:
+                                        Theme.of(context).textTheme.bodyText1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  SizedBox(height: 2),
+                                  Text(
+                                    '${dataval.dummy.first.offerprice} / ${dataval.dummy.first.variation}',
+                                    style: Theme.of(context).textTheme.caption,
+                                    overflow: TextOverflow.ellipsis,
+                                  )
+                                ],
+                              ),
                           );
                         },
                       ),
                     ),
                   ),
-                ),
-        ],
+                      ],
       ),
     );
   }

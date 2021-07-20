@@ -17,6 +17,27 @@ class FeaturedPage extends StatefulWidget {
 }
 
 class _FeaturedPageState extends State<FeaturedPage> {
+  final ScrollController scrollController = ScrollController();
+   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    scrollController.addListener(scrollListener);
+    producsController.getNextProducts(true,'featured');
+  }
+    @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
+  void scrollListener() {
+    if (scrollController.offset >= scrollController.position.maxScrollExtent/2 ) {
+      if (producsController.hasNext.value) {
+        producsController.getNextProducts(true,'featured');
+      }
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -57,6 +78,7 @@ class _FeaturedPageState extends State<FeaturedPage> {
           ),
         ),
         body: SingleChildScrollView(
+
           child: Container(
             margin: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
             decoration: BoxDecoration(
@@ -93,6 +115,7 @@ class _FeaturedPageState extends State<FeaturedPage> {
                   () => Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: GridView.count(
+                      controller: scrollController,
                       crossAxisCount: MediaQuery.of(context).orientation ==
                               Orientation.portrait
                           ? 2
@@ -121,142 +144,81 @@ class _FeaturedPageState extends State<FeaturedPage> {
                                           DetailScreen(product: dataval)));
                               // Get.to(() => DetailScreen(product: dataval));
                             },
-                            child: Stack(
-                              alignment: AlignmentDirectional.topEnd,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Expanded(
-                                      child: CachedNetworkImage(
-                                        imageUrl: dataval.photo[0],
-                                        imageBuilder:
-                                            (context, imageProvider) =>
-                                                Container(
-                                          decoration: BoxDecoration(
-                                            image: DecorationImage(
-                                                image: imageProvider,
-                                                fit: BoxFit.cover),
-                                            borderRadius:
-                                                BorderRadius.circular(5),
-                                          ),
-                                        ),
-                                        placeholder: (context, url) =>
-                                            Image.asset(
-                                          'assets/images/loading.gif',
-                                          fit: BoxFit.contain,
-                                        ),
+                                Expanded(
+                                  child: CachedNetworkImage(
+                                    imageUrl: dataval.photo[0],
+                                    imageBuilder:
+                                        (context, imageProvider) =>
+                                            Container(
+                                      decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            image: imageProvider,
+                                            fit: BoxFit.cover),
+                                        borderRadius:
+                                            BorderRadius.circular(5),
                                       ),
                                     ),
-                                    dataval.quantity == 0
+                                    placeholder: (context, url) =>
+                                        Image.asset(
+                                      'assets/images/loading.gif',
+                                      fit: BoxFit.contain,
+                                    ),
+                                  ),
+                                ),
+                                dataval.quantity == 0
+                                    ? Text(
+                                        'Out of Stock',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .subtitle2
+                                            .copyWith(color: Colors.red),
+                                      )
+                                    : !dataval.pincode.contains(
+                                            userController
+                                                .userModel.value.pincode)
                                         ? Text(
-                                            'Out of Stock',
+                                            'Not Deliverable',
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .subtitle2
-                                                .copyWith(color: Colors.red),
+                                                .copyWith(
+                                                    color: Colors.red),
                                           )
-                                        : !dataval.pincode.contains(
-                                                userController
-                                                    .userModel.value.pincode)
-                                            ? Text(
-                                                'Not Deliverable',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .subtitle2
-                                                    .copyWith(
-                                                        color: Colors.red),
-                                              )
-                                            : Text(
-                                                'Deliverable',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .subtitle2
-                                                    .copyWith(
-                                                        color: Colors.green),
-                                              ),
-                                    // RatingBarIndicator(
-                                    //   rating: double.parse(dataval.rating),
-                                    //   itemBuilder: (context, index) => Icon(
-                                    //     Icons.star,
-                                    //     color: Colors.amber,
-                                    //   ),
-                                    //   itemCount: 5,
-                                    //   itemSize: 22.0,
-                                    //   direction: Axis.horizontal,
-                                    // ),
-                                    SizedBox(height: 5),
-                                    Text(
-                                      dataval.name,
-                                      style:
-                                          Theme.of(context).textTheme.bodyText1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    SizedBox(height: 2),
-                                    Text(
-                                      '${dataval.price} / ${dataval.variationtype}',
-                                      style:
-                                          Theme.of(context).textTheme.caption,
-                                      overflow: TextOverflow.ellipsis,
-                                    )
-                                  ],
-                                ),
-                                // Container(
-                                //   margin: EdgeInsets.all(10),
-                                //   width: 40,
-                                //   height: 40,
-                                //   child: FlatButton(
-                                //     padding: EdgeInsets.all(0),
-                                //     onPressed: () {
-                                //       if (userController
-                                //           .userModel.value.address.isEmpty) {
-                                //         showDialog(
-                                //           context: context,
-                                //           builder: (context) {
-                                //             return AlertDialog(
-                                //               title:
-                                //                   Text('Complete your profile'),
-                                //               content: Text(
-                                //                   'Please add your address and pincode to your profile section'),
-                                //               actions: [
-                                //                 RaisedButton(
-                                //                     color: kprimarycolor,
-                                //                     child: Text(
-                                //                       'Go to my Profile',
-                                //                       style: TextStyle(
-                                //                           color: textwhite),
-                                //                     ),
-                                //                     onPressed: () {
-                                //                       Get.to(() => MyProfile());
-                                //                     })
-                                //               ],
-                                //             );
-                                //           },
-                                //         );
-                                //       } else {
-                                //         dataval.quantity == 0
-                                //             ? Get.rawSnackbar(
-                                //                 message: 'Product Out Of Stock')
-                                //             : !dataval.pincode.contains(
-                                //                     userController.userModel
-                                //                         .value.pincode)
-                                //                 ? Get.rawSnackbar(
-                                //                     message: 'Not Deliverable')
-                                //                 : cartController
-                                //                     .addProductToCart(dataval);
-                                //       }
-                                //     },
-                                //     child: Icon(
-                                //       Icons.add_shopping_cart,
-                                //       color: textwhite,
-                                //       size: 24,
-                                //     ),
-                                //     color: dataval.quantity == 0
-                                //         ? Colors.red
-                                //         : kprimarycolor,
-                                //     shape: StadiumBorder(),
+                                        : Text(
+                                            'Deliverable',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .subtitle2
+                                                .copyWith(
+                                                    color: Colors.green),
+                                          ),
+                                // RatingBarIndicator(
+                                //   rating: double.parse(dataval.rating),
+                                //   itemBuilder: (context, index) => Icon(
+                                //     Icons.star,
+                                //     color: Colors.amber,
                                 //   ),
+                                //   itemCount: 5,
+                                //   itemSize: 22.0,
+                                //   direction: Axis.horizontal,
                                 // ),
+                                SizedBox(height: 5),
+                                Text(
+                                  dataval.name,
+                                  style:
+                                      Theme.of(context).textTheme.bodyText1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                SizedBox(height: 2),
+                                Text(
+                                  '${dataval.dummy.first.offerprice} / ${dataval.dummy.first.variation}',
+                                  style:
+                                      Theme.of(context).textTheme.caption,
+                                  overflow: TextOverflow.ellipsis,
+                                )
                               ],
                             ),
                           );

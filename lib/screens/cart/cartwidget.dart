@@ -65,7 +65,7 @@ class CartItemWidget extends StatelessWidget {
                           Text(
                             '${cartItem.name}',
                             style: TextStyle(
-                              fontSize: 15.0,
+                              fontSize: 12.0,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -73,43 +73,39 @@ class CartItemWidget extends StatelessWidget {
                             height: 7.0,
                           ),
                           Text(
-                            cartItem.discount != ''
-                                ? '₹${cartItem.discount} / ₹${cartItem.variationtype}'
-                                : '₹${cartItem.price} / ₹${cartItem.variationtype}',
+                            '₹${cartItem.cost} / ${cartItem.quantity}',
                             style: TextStyle(
                               color: kprimarycolor,
-                              fontSize: 15.0,
+                              fontSize: 12.0,
                             ),
                           ),
                           SizedBox(
                             height: 7.0,
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              RichText(
-                                text: TextSpan(
-                                  text: 'Price:  ',
-                                  style: TextStyle(
-                                      fontSize: 15.0, color: Colors.grey),
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                        text: cartItem.discount == ''
-                                            ? ' ${cartItem.cost}'
-                                            : ' ${cartItem.cost}',
-                                        style: TextStyle(
-                                          fontSize: 15.0,
-                                          color: kprimarycolor,
-                                        )),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(
-                                width: 10.0,
-                              ),
-                            ],
-                          ),
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.start,
+                          //   crossAxisAlignment: CrossAxisAlignment.center,
+                          //   children: <Widget>[
+                          //     RichText(
+                          //       text: TextSpan(
+                          //         text: 'Price:  ',
+                          //         style: TextStyle(
+                          //             fontSize: 15.0, color: Colors.grey),
+                          //         children: <TextSpan>[
+                          //           TextSpan(
+                          //               text:  '₹${cartItem.cost}',
+                          //               style: TextStyle(
+                          //                 fontSize: 15.0,
+                          //                 color: kprimarycolor,
+                          //               )),
+                          //         ],
+                          //       ),
+                          //     ),
+                          //     SizedBox(
+                          //       width: 10.0,
+                          //     ),
+                          //   ],
+                          // ),
                         ],
                       ),
                     ),
@@ -123,29 +119,61 @@ class CartItemWidget extends StatelessWidget {
               IconButton(
                 icon: Icon(Icons.delete_outline),
                 onPressed: () {
-                  print(cartItem);
-                  print(cartItem.toJson());
-                  firebaseFirestore
-                      .collection(userController.usersCollection)
-                      .doc(userController.firebaseUser.value.uid)
-                      .update({
-                    'cart': FieldValue.arrayRemove([cartItem.toJson()])
-                  });
+                  showDialog(
+                    barrierDismissible: false,
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: Text('Are you Sure?'),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text('Do you want to delete ${cartItem.name}?'),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      child: Text('Cencel'),
+                                    ),
+                                    ElevatedButton(
+                                        onPressed: () => firebaseFirestore
+                                                .collection(userController
+                                                    .usersCollection)
+                                                .doc(userController
+                                                    .firebaseUser.value.uid)
+                                                .update({
+                                              'cart': FieldValue.arrayRemove(
+                                                  [cartItem.toJson()])
+                                            }).whenComplete(() => Navigator.pop(context)),
+                                        child: Text('Yes'))
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        );
+                      });
+
                   // cartController.removeCartItem(cartItem);
                 },
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // IconButton(
-                  //     icon: Icon(Icons.chevron_left),
-                  //     onPressed: () {
-                  //       cartController.decreaseQuantity(cartItem);
-                  //     }),
+                  IconButton(
+                      icon: Icon(Icons.remove_circle_outline),
+                      onPressed: () {
+                        cartItem.number > 1
+                            ? cartController.decreaseQuantity(cartItem)
+                            : null;
+                      }),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      cartItem.quantity.toString(),
+                      cartItem.number.toString(),
                     ),
                   ),
                   // producsController.products
@@ -156,11 +184,12 @@ class CartItemWidget extends StatelessWidget {
                   //     ? Container(
                   //         width: 40,
                   //       )
-                  //     : IconButton(
-                  //         icon: Icon(Icons.chevron_right),
-                  //         onPressed: () {
-                  //           cartController.increaseQuantity(cartItem);
-                  //         }),
+                  //     :
+                  IconButton(
+                      icon: Icon(Icons.add_circle_outline),
+                      onPressed: () {
+                        cartController.increaseQuantity(cartItem);
+                      }),
                 ],
               ),
             ],

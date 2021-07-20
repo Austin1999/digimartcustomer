@@ -10,9 +10,11 @@ class OrderModel {
   static const TAX = 'tax';
   static const SHIPPINGFEE = 'shippingfee';
   static const DISCOUNT = "discount";
+  
 
   String id;
   var totalprice;
+  
   String cusname;
   String address;
   String phone;
@@ -33,6 +35,7 @@ class OrderModel {
       this.datetime,
       this.discount,
       this.phone,
+      
       this.tax,
       this.shippingfee,
       this.pincode});
@@ -46,6 +49,7 @@ class OrderModel {
     datetime = data[DATETIME];
     status = data[STATUS];
     tax = data[TAX];
+    
     discount = data[DISCOUNT];
     shippingfee = data[SHIPPINGFEE];
     item = _convertCartItems(data[ITEM]);
@@ -76,6 +80,7 @@ class OrderItemModel {
   static const PRODUCT_ID = "productId";
   static const VARIATIONTYPE = "variationtype";
   static const DISCOUNT = "discount";
+  static const NUMBER = "number";
   static const TAX = 'tax';
   static const SHIPPINGFEE = 'shippingfee';
 
@@ -88,10 +93,12 @@ class OrderItemModel {
   String variationtype;
   String pname;
   String discount;
+  int number;
 
   OrderItemModel({
     this.productId,
     this.id,
+    this.number,
     this.image,
     this.pname,
     this.price,
@@ -111,16 +118,17 @@ class OrderItemModel {
     price = data[PRICE];
     variationtype = data[VARIATIONTYPE];
     discount = data[DISCOUNT];
+    number = data[NUMBER];
   }
 
-  Map<String, dynamic> toJson() => {
-        ID: id,
-        PRODUCT_ID: productId,
-        IMAGE: image,
-        PNAME: pname,
-        QUANTITY: quantity,
-        COST: price,
-        PRICE: price,
-        DISCOUNT: discount,
-      };
+  // Map<String, dynamic> toJson() => {
+  //       ID: id,
+  //       PRODUCT_ID: productId,
+  //       IMAGE: image,
+  //       PNAME: pname,
+  //       QUANTITY: quantity,
+  //       COST: price,
+  //       PRICE: price,
+  //       DISCOUNT: discount,
+  //     };
 }

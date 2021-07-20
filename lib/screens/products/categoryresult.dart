@@ -22,9 +22,33 @@ class CategoryListpage extends StatefulWidget {
 }
 
 class _CategoryListpageState extends State<CategoryListpage> {
+   final ScrollController scrollController = ScrollController();
+
+
+    @override
+  void dispose() {
+    scrollController.dispose();
+     SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    super.dispose();
+  }
+
+  void scrollListener() {
+    if (scrollController.offset >= scrollController.position.maxScrollExtent/2 ) {
+      if (producsController.hasNext.value) {
+        producsController.getNextProducts(widget.searchresult,'category');
+      }
+    }
+  }
   @override
   void initState() {
     super.initState();
+    scrollController.addListener(scrollListener);
+    producsController.getNextProducts(widget.searchresult, 'category');
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
@@ -32,11 +56,11 @@ class _CategoryListpageState extends State<CategoryListpage> {
 
   @override
   Widget build(BuildContext context) {
-    List<ProductModel> datalist = producsController.products
+    RxList<ProductModel> datalist = RxList(producsController.products
         .where((string) => string.category
             .toLowerCase()
             .contains(widget.searchresult.toLowerCase()))
-        .toList();
+        .toList());
     print(datalist);
     return SafeArea(
       child: Scaffold(
@@ -82,118 +106,111 @@ class _CategoryListpageState extends State<CategoryListpage> {
           elevation: 0,
           iconTheme: IconThemeData(color: kprimarycolor),
         ),
-        body: ListView.builder(
-          itemCount: datalist.length,
-          itemBuilder: (context, index) {
-            var data = datalist[index];
+        body: Obx(
+                    () =>  ListView.builder(
+            controller: scrollController,
+            itemCount: datalist.length,
+            itemBuilder: (context, index) {
+              var data = datalist[index];
 
-            return Card(
-                clipBehavior: Clip.antiAlias,
-                child: InkWell(
-                  onTap: () => Get.to(() => DetailScreen(
-                        product: data,
-                      )),
-                  child: Container(
-                    height: 130,
-                    padding: const EdgeInsets.all(0),
-                    child: Row(children: [
-                      Expanded(
-                        flex: 5,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: CachedNetworkImage(
-                            imageUrl: data.photo[0],
-                            fit: BoxFit.cover,
-                            placeholder: (context, url) => Image.asset(
-                              'assets/images/loading.gif',
-                              fit: BoxFit.contain,
+              return Card(
+                  clipBehavior: Clip.antiAlias,
+                  child: InkWell(
+                    onTap: () => Get.to(() => DetailScreen(
+                          product: data,
+                        )),
+                    child: Container(
+                      height: 130,
+                      padding: const EdgeInsets.all(0),
+                      child: Row(children: [
+                        Expanded(
+                          flex: 5,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: CachedNetworkImage(
+                              imageUrl: data.photo[0],
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) => Image.asset(
+                                'assets/images/loading.gif',
+                                fit: BoxFit.contain,
+                              ),
+                              errorWidget: (context, url, error) =>
+                                  Icon(Icons.error),
                             ),
-                            errorWidget: (context, url, error) =>
-                                Icon(Icons.error),
                           ),
                         ),
-                      ),
-                      Spacer(
-                        flex: 1,
-                      ),
-                      Expanded(
-                        flex: 5,
-                        child: Container(
-                          padding: const EdgeInsets.only(top: 5),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Text(data.name,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.fade,
-                                  style: Theme.of(context).textTheme.subtitle1),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Text(
-                                '₹${data.price}/${data.variationtype}',
-                                style: TextStyle(fontSize: 16),
-                              ),
-                              SizedBox(
-                                height: 6,
-                              ),
-                              data.quantity == 0
-                                  ? Text(
-                                      'Out of Stock',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .subtitle2
-                                          .copyWith(color: Colors.red),
-                                    )
-                                  : !data.pincode.contains(userController
-                                          .userModel.value.pincode)
-                                      ? Text(
-                                          'Not Deliverable',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .subtitle2
-                                              .copyWith(color: Colors.red),
-                                        )
-                                      : Text(
-                                          'Deliverable',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .subtitle2
-                                              .copyWith(color: Colors.green),
-                                        ),
-                              // RatingBarIndicator(
-                              //   rating: double.parse(data.rating),
-                              //   itemBuilder: (context, index) => Icon(
-                              //     Icons.star,
-                              //     color: Colors.amber,
-                              //   ),
-                              //   itemCount: 5,
-                              //   itemSize: 22.0,
-                              //   direction: Axis.horizontal,
-                              // ),
-                            ],
+                        Spacer(
+                          flex: 1,
+                        ),
+                        Expanded(
+                          flex: 5,
+                          child: Container(
+                            padding: const EdgeInsets.only(top: 5),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text(data.name,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.fade,
+                                    style: Theme.of(context).textTheme.subtitle1),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Text(
+                                  '₹${data.dummy.first.offerprice} / ${data.dummy.first.variation}',
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                                SizedBox(
+                                  height: 6,
+                                ),
+                                data.quantity == 0
+                                    ? Text(
+                                        'Out of Stock',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .subtitle2
+                                            .copyWith(color: Colors.red),
+                                      )
+                                    : !data.pincode.contains(userController
+                                            .userModel.value.pincode)
+                                        ? Text(
+                                            'Not Deliverable',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .subtitle2
+                                                .copyWith(color: Colors.red),
+                                          )
+                                        : Text(
+                                            'Deliverable',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .subtitle2
+                                                .copyWith(color: Colors.green),
+                                          ),
+                                // RatingBarIndicator(
+                                //   rating: double.parse(data.rating),
+                                //   itemBuilder: (context, index) => Icon(
+                                //     Icons.star,
+                                //     color: Colors.amber,
+                                //   ),
+                                //   itemCount: 5,
+                                //   itemSize: 22.0,
+                                //   direction: Axis.horizontal,
+                                // ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      Icon(Icons.arrow_forward_ios)
-                    ]),
-                  ),
-                ));
-          },
+                        Icon(Icons.arrow_forward_ios)
+                      ]),
+                    ),
+                  ));
+            },
+          ),
         ),
       ),
     );
   }
 
-  @override
-  dispose() {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeRight,
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
-    super.dispose();
-  }
 }
